@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Звёзды</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <div id="game-root" aria-label="Звёзды"></div>
+      <section id="game-hud" class="game-hud" aria-live="polite" hidden>
+        <div class="hud-panel">
+          <p id="hud-level" class="hud-line hud-level"></p>
+          <p id="hud-stats" class="hud-line"></p>
+          <p id="hud-controls" class="hud-line"></p>
+        </div>
+        <p id="hud-message" class="hud-message"></p>
+      </section>
+      <p id="boot-status" class="boot-status">Загрузка...</p>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.86.0/dist/phaser.min.js"></script>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
