@@ -100,3 +100,18 @@ npm run check
 ```
 
 Команда проверяет JavaScript-файлы на синтаксические ошибки.
+## Tiled level editing
+
+Level 2 can be edited in Tiled through:
+
+```text
+assets/levels/level-two.tmj
+```
+
+Open it in Tiled, edit object layers, save, then refresh `http://127.0.0.1:4173/?level=2` with `Ctrl+F5`.
+
+Full layer/property guide:
+
+```text
+docs/TILED_LEVELS.md
+```

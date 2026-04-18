@@ -6,7 +6,9 @@ export const DEFAULT_TUNING = {
   airControlScale: 1.2,
   jumpScale: 1.08,
   rampForceScale: 1.7,
-  rampSpeedScale: 1.35
+  rampSpeedScale: 1.35,
+  grappleSwingScale: 1.35,
+  grappleSpeedScale: 1.25
 };
 
 const SLIDERS = [
@@ -49,6 +51,20 @@ const SLIDERS = [
     key: 'rampSpeedScale',
     label: 'Рампа: скорость',
     min: 0.6,
+    max: 2.6,
+    step: 0.05
+  },
+  {
+    key: 'grappleSwingScale',
+    label: 'Лоза: сила',
+    min: 0.6,
+    max: 3.5,
+    step: 0.05
+  },
+  {
+    key: 'grappleSpeedScale',
+    label: 'Лоза: скорость',
+    min: 0.8,
     max: 2.6,
     step: 0.05
   }

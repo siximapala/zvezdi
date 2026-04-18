@@ -20,6 +20,7 @@ import {
   createMaterialGroups
 } from '../systems/materials.js';
 import { createControlSet, updatePlayerMovement } from '../systems/playerControls.js';
+import { resolveLevelConfig } from '../systems/tiledLevel.js';
 
 const PhaserScene = window.Phaser?.Scene ?? class {};
 const CAMERA_VIEW = {
@@ -34,9 +35,35 @@ const CAMERA_VIEW = {
 };
 CAMERA_VIEW.aspect = CAMERA_VIEW.width / CAMERA_VIEW.height;
 
+const GRAPPLE_TUNING = {
+  swingForce: 0.34,
+  alignedSwingBoost: 1.45,
+  reelPump: 0.12,
+  radialSpring: 0.034,
+  radialDamping: 0.29,
+  maxVelocityX: 23,
+  maxVelocityY: 24
+};
+
+const ONE_WAY_PLATFORM = {
+  sideInset: 10,
+  previousAboveGrace: 6,
+  catchAbove: 38,
+  catchBelow: 56,
+  stickMs: 220,
+  stickBelow: 20,
+  upwardGraceVelocity: -3.2
+};
+
+const PLAYER_BODY = {
+  width: 42,
+  height: 76
+};
+
 export class LevelOneScene extends PhaserScene {
   constructor(sceneKey = 'LevelOneScene', level = LEVEL_ONE) {
     super(sceneKey);
+    this.sourceLevel = level;
     this.level = level;
     this.players = [];
     this.goalState = {};
@@ -46,6 +73,7 @@ export class LevelOneScene extends PhaserScene {
   create() {
     const Phaser = window.Phaser;
 
+    this.level = resolveLevelConfig(this, this.sourceLevel);
     this.players = [];
     this.goalState = {};
     this.activatorState = {};
@@ -76,6 +104,11 @@ export class LevelOneScene extends PhaserScene {
 
     this.matter.world.on('collisionstart', this.handleMatterCollision, this);
     this.matter.world.on('collisionactive', this.handleMatterCollision, this);
+    const matterEvents = window.Matter?.Events ?? window.Phaser?.Physics?.Matter?.Matter?.Events;
+    const matterEngine = this.matter.world.engine;
+
+    this.beforeMatterSolve = () => this.disableBadOneWayPlatformPairsBeforeSolve();
+    matterEvents?.on?.(matterEngine, 'beforeSolve', this.beforeMatterSolve);
     this.resetKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     this.menuKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.nextKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
@@ -83,6 +116,7 @@ export class LevelOneScene extends PhaserScene {
     this.events.once('shutdown', () => {
       matterWorld?.off?.('collisionstart', this.handleMatterCollision, this);
       matterWorld?.off?.('collisionactive', this.handleMatterCollision, this);
+      matterEvents?.off?.(matterEngine, 'beforeSolve', this.beforeMatterSolve);
       removeDevTuningPanel();
       hideHud();
     });
@@ -161,10 +195,11 @@ export class LevelOneScene extends PhaserScene {
   createPlayers() {
     for (const character of CHARACTERS) {
       const collisionMask = collisionMaskForCharacter(character);
-      const sprite = this.matter.add.sprite(character.spawn.x, character.spawn.y, character.textureKey);
+      const spawn = this.spawnFor(character);
+      const sprite = this.matter.add.sprite(spawn.x, spawn.y, character.textureKey);
 
       sprite.setScale(1.32);
-      sprite.setRectangle(42, 42);
+      sprite.setRectangle(PLAYER_BODY.width, PLAYER_BODY.height);
       sprite.setFixedRotation();
       sprite.setFriction(0.03, 0.02, 0.12);
       sprite.setFrictionAir(0.018);
@@ -188,6 +223,8 @@ export class LevelOneScene extends PhaserScene {
         surfaceTouchedAt: 0,
         onGroundAt: -1000,
         ridingPlayerAt: -1000,
+        oneWayPlatformBody: null,
+        oneWayPlatformAt: -1000,
         slopeMomentumUntil: 0,
         slipperyJumpCount: 0,
         slopeSlideDirection: -1,
@@ -199,6 +236,10 @@ export class LevelOneScene extends PhaserScene {
       this.players.push(player);
       playCharacterAnimation(sprite, character, 'idle');
     }
+  }
+
+  spawnFor(character) {
+    return this.level.spawns?.[character.id] ?? character.spawn;
   }
 
   registerPlayerBody(player) {
@@ -222,6 +263,10 @@ export class LevelOneScene extends PhaserScene {
       const playerA = this.playerFromBody(bodyA);
       const playerB = this.playerFromBody(bodyB);
 
+      if (this.disableBadOneWayPlatformPair(pair, playerA, bodyB) || this.disableBadOneWayPlatformPair(pair, playerB, bodyA)) {
+        continue;
+      }
+
       if (playerA && playerB) {
         this.handlePlayerPair(playerA, playerB, time);
         continue;
@@ -235,6 +280,38 @@ export class LevelOneScene extends PhaserScene {
         this.handlePlayerWorldContact(playerB, bodyA, time);
       }
     }
+  }
+
+  disableBadOneWayPlatformPairsBeforeSolve() {
+    for (const pair of this.matter.world.engine.pairs.list ?? []) {
+      const bodyA = this.rootBody(pair.bodyA);
+      const bodyB = this.rootBody(pair.bodyB);
+      const playerA = this.playerFromBody(bodyA);
+      const playerB = this.playerFromBody(bodyB);
+
+      this.disableBadOneWayPlatformPair(pair, playerA, bodyB);
+      this.disableBadOneWayPlatformPair(pair, playerB, bodyA);
+    }
+  }
+
+  disableBadOneWayPlatformPair(pair, player, otherBody) {
+    if (!player || !otherBody?.oneWayPlatform) {
+      return false;
+    }
+
+    if (this.isValidOneWayPlatformContact(player, otherBody)) {
+      pair.isSensor = false;
+      return false;
+    }
+
+    pair.isSensor = true;
+    pair.separation = 0;
+
+    if (pair.collision) {
+      pair.collision.depth = 0;
+    }
+
+    return true;
   }
 
   handlePlayerPair(first, second, time) {
@@ -275,9 +352,39 @@ export class LevelOneScene extends PhaserScene {
       return;
     }
 
+    if (otherBody.oneWayPlatform && !this.isValidOneWayPlatformContact(player, otherBody)) {
+      return;
+    }
+
     if (this.isAbove(player.sprite.body, otherBody, 8)) {
       this.markGrounded(player, material, time, otherBody);
     }
+  }
+
+  isValidOneWayPlatformContact(playerConfig, platformBody) {
+    const player = this.rootBody(playerConfig.sprite.body);
+    const platform = this.rootBody(platformBody);
+    const playerHeight = player.bounds.max.y - player.bounds.min.y;
+    const previousBottom = (player.positionPrev?.y ?? player.position.y) + playerHeight / 2;
+    const currentBottom = player.bounds.max.y;
+    const topY = platform.topY ?? platform.bounds.min.y;
+    const minX = (platform.minX ?? platform.bounds.min.x) + ONE_WAY_PLATFORM.sideInset;
+    const maxX = (platform.maxX ?? platform.bounds.max.x) - ONE_WAY_PLATFORM.sideInset;
+    const centerX = player.position.x;
+    const centerInside = centerX >= minX && centerX <= maxX;
+    const recentlyGroundedHere =
+      playerConfig.oneWayPlatformBody === platform && this.time.now - playerConfig.oneWayPlatformAt <= ONE_WAY_PLATFORM.stickMs;
+    const cameFromAbove = previousBottom <= topY + ONE_WAY_PLATFORM.previousAboveGrace;
+    const crossedTop = currentBottom >= topY - ONE_WAY_PLATFORM.catchAbove && currentBottom <= topY + ONE_WAY_PLATFORM.catchBelow;
+    const fallingOrResting = player.velocity.y >= -1.2;
+    const stillStandingOnTop =
+      recentlyGroundedHere &&
+      centerInside &&
+      currentBottom >= topY - 32 &&
+      currentBottom <= topY + ONE_WAY_PLATFORM.stickBelow &&
+      player.velocity.y >= ONE_WAY_PLATFORM.upwardGraceVelocity;
+
+    return stillStandingOnTop || (centerInside && cameFromAbove && crossedTop && fallingOrResting);
   }
 
   markGrounded(player, material, time, body) {
@@ -286,7 +393,15 @@ export class LevelOneScene extends PhaserScene {
     player.surfaceTouchedAt = time;
     player.slopeSlideDirection = body.slideDirection ?? (material === 'blue' ? -1 : 1);
 
-    if (body.slope) {
+    if (body.oneWayPlatform) {
+      player.oneWayPlatformBody = this.rootBody(body);
+      player.oneWayPlatformAt = time;
+    } else if (!body.slope) {
+      player.oneWayPlatformBody = null;
+      player.oneWayPlatformAt = -1000;
+    }
+
+    if (body.slope && behaviorFor(player.character, material) === 'slippery') {
       player.slopeMomentumUntil = Math.max(player.slopeMomentumUntil, time + 700);
     }
   }
@@ -339,7 +454,8 @@ export class LevelOneScene extends PhaserScene {
         const distance = Math.hypot(anchor.x - green.sprite.x, anchor.y - green.sprite.y);
         green.grapple = {
           anchor,
-          length: Phaser.Math.Clamp(distance, anchor.minLength ?? 74, anchor.maxLength ?? anchor.radius)
+          length: Phaser.Math.Clamp(distance, anchor.minLength ?? 74, anchor.maxLength ?? anchor.radius),
+          attachedAt: time
         };
         this.currentMessage = 'Мята держится лозой. I/M - длина, J/L - раскачка, K - отпустить';
         setHudMessage(this.currentMessage);
@@ -349,26 +465,48 @@ export class LevelOneScene extends PhaserScene {
     if (green.grapple) {
       const { anchor } = green.grapple;
       const body = green.sprite.body;
+      const tuning = this.gameplayTuning;
       const dx = green.sprite.x - anchor.x;
       const dy = green.sprite.y - anchor.y;
       const distance = Math.max(1, Math.hypot(dx, dy));
       const minLength = anchor.minLength ?? 74;
       const maxLength = anchor.maxLength ?? anchor.radius;
       const lengthDelta = (green.keys.jump.isDown ? -4.6 : 0) + (green.keys.down?.isDown ? 4.6 : 0);
+      const inputAxis = (green.keys.right.isDown ? 1 : 0) - (green.keys.left.isDown ? 1 : 0);
 
       green.grapple.length = Phaser.Math.Clamp(green.grapple.length + lengthDelta, minLength, maxLength);
 
       const normalX = dx / distance;
       const normalY = dy / distance;
+      const tangentX = -normalY;
+      const tangentY = normalX;
       const radialVelocity = body.velocity.x * normalX + body.velocity.y * normalY;
+      const tangentVelocity = body.velocity.x * tangentX + body.velocity.y * tangentY;
       const stretch = distance - green.grapple.length;
-      const correction = stretch * 0.032 + radialVelocity * 0.34;
+      const correction = stretch * GRAPPLE_TUNING.radialSpring + radialVelocity * GRAPPLE_TUNING.radialDamping;
+      const tangentInput = inputAxis === 0 ? 0 : inputAxis * Math.sign(tangentX || 1);
+      const swingAlignment = Math.sign(tangentVelocity) === Math.sign(tangentInput) ? GRAPPLE_TUNING.alignedSwingBoost : 1;
+      const swingImpulse = tangentInput * GRAPPLE_TUNING.swingForce * swingAlignment * tuning.grappleSwingScale;
+      const reelImpulse =
+        lengthDelta < 0 && Math.abs(tangentVelocity) > 0.7
+          ? Math.sign(tangentVelocity) * GRAPPLE_TUNING.reelPump * tuning.grappleSwingScale
+          : 0;
+      const nextVelocityX = body.velocity.x - normalX * correction + tangentX * (swingImpulse + reelImpulse);
+      const nextVelocityY = body.velocity.y - normalY * correction + tangentY * (swingImpulse + reelImpulse);
 
       green.sprite.setVelocity(
-        Phaser.Math.Clamp(body.velocity.x - normalX * correction, -15, 15),
-        Phaser.Math.Clamp(body.velocity.y - normalY * correction, -17, 17)
+        Phaser.Math.Clamp(
+          nextVelocityX,
+          -GRAPPLE_TUNING.maxVelocityX * tuning.grappleSpeedScale,
+          GRAPPLE_TUNING.maxVelocityX * tuning.grappleSpeedScale
+        ),
+        Phaser.Math.Clamp(
+          nextVelocityY,
+          -GRAPPLE_TUNING.maxVelocityY * tuning.grappleSpeedScale,
+          GRAPPLE_TUNING.maxVelocityY * tuning.grappleSpeedScale
+        )
       );
-      green.slopeMomentumUntil = time + 700;
+      green.slopeMomentumUntil = time + 1500;
       this.drawGrappleLine(green, anchor);
     } else {
       this.clearGrappleLine(green);
@@ -616,13 +754,17 @@ export class LevelOneScene extends PhaserScene {
     player.sprite.setVelocity(0, 0);
 
     this.time.delayedCall(180, () => {
+      const spawn = this.spawnFor(player.character);
+
       player.sprite.clearTint();
-      player.sprite.setPosition(player.character.spawn.x, player.character.spawn.y);
+      player.sprite.setPosition(spawn.x, spawn.y);
       player.sprite.setVelocity(0, 0);
       player.sprite.setIgnoreGravity(false);
       player.sprite.body.collisionFilter.mask = player.collisionMask;
       player.onGroundAt = -1000;
       player.surfaceTouchedAt = 0;
+      player.oneWayPlatformBody = null;
+      player.oneWayPlatformAt = -1000;
       player.respawning = false;
     });
   }

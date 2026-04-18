@@ -1,5 +1,7 @@
 export const LEVEL_TWO = {
   id: 'level-two',
+  tiledKey: 'level-two-tiled',
+  tiledPath: 'assets/levels/level-two.tmj',
   title: 'Уровень 2',
   startMessage: 'Мята разгоняется на синей рампе, перелетает пропасть лозой и включает мост для всех',
   completeMessage: 'Уровень 2 пройден. Enter: дальше',

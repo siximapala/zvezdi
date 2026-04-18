@@ -160,6 +160,7 @@ Done:
 
 Checked:
 - `npm run check` passes.
+
 - Headless Edge real loop: when the carrier is already grounded, a rider on the carrier head holds `gapRange: 0` and `yRange: 0` for 100 frames.
 - Headless Edge real loop: manual side-push moves the pushed player by about `100px` over 30 frames.
 
@@ -216,3 +217,104 @@ Done:
 
 Checked:
 - `npm run check` passes.
+
+2026-04-18 Tiled level workflow
+
+Done:
+- Added object-only Tiled map support through `src/game/systems/tiledLevel.js`.
+- BootScene now preloads level `.tmj` JSON assets declared by level configs.
+- Level scenes resolve Tiled maps at create-time and keep JS configs as fallback metadata.
+- Level 2 now loads geometry and mechanics from `assets/levels/level-two.tmj`.
+- Added Tiled object layers for spawns, neutral blocks, material blocks/slopes, vine anchors, plates, bridges, goals, and notes.
+- Added `docs/TILED_LEVELS.md` with the layer/property contract for editing levels in Tiled.
+- Dev server now serves `.json` and `.tmj` files as `application/json`.
+- Added Tiled import aliases for hazard editing: `red` is treated as `pink`, and `Hazards`/`Spikes` layers are treated as material layers.
+
+Checked:
+- `npm run check` passes.
+- `assets/levels/level-two.tmj` parses as JSON.
+- The Tiled converter returns the expected level 2 objects: 10 neutral blocks, 2 material objects, 3 spawns, 2 vine anchors, 1 plate, 1 bridge, and 3 goals.
+- Clean dev-server port serves `.tmj` with `application/json; charset=utf-8`.
+- Headless Edge could not complete a real Phaser runtime check because Phaser is loaded from CDN and was not available in the isolated browser session.
+
+2026-04-18 vine swing feel
+
+Done:
+- Made Green's vine add tangential swing velocity from left/right input instead of only correcting rope distance.
+- Added stronger acceleration when input matches the current swing direction.
+- Added a small reel-in pump when shortening the vine with upward input while already swinging.
+- Raised vine velocity limits and keeps post-release momentum for longer.
+- Added dev tuning sliders for vine swing force and vine speed.
+
+Checked:
+- `npm run check` passes.
+
+2026-04-18 slope edge grounding fix
+
+Done:
+- Slope Matter bodies now carry explicit visual slope-line metadata.
+- The solid slope collision strip is slightly shorter and thinner, so invisible ramp caps protrude less beyond the drawn triangle.
+- `LevelOneScene` only marks a player grounded on a slope when the player's feet are above the actual slope line and inside the usable line range.
+- Side/end/underside contacts with a ramp no longer grant grounded state, so players should not be able to jump from random ramp parts.
+
+Checked:
+- `npm run check` passes.
+
+2026-04-18 one-way slope collision follow-up
+
+Done:
+- Bad ramp contacts now disable the Matter collision pair itself, not only the grounded/jump state.
+- A player can collide with a slope only when their feet are near the real slope line, inside the usable X range, and they came from above on the previous physics step.
+- Contacts from below, side, underside, and ramp caps should behave like the ramp is not there, avoiding corner scraping and below-ramp jumps.
+- After reviewing `video_new.mp4`, added a Matter `beforeSolve` hook so invalid slope contacts are disabled before the solver can push the player against the ramp corner.
+- Invalid slope pairs are also marked sensor-like for that solve and have their collision depth cleared.
+
+Checked:
+- `npm run check` passes.
+
+2026-04-18 sensor slope controller rewrite
+
+Done:
+- Replaced solid Matter slope collision with sensor-only slope surfaces.
+- Added a controller-style slope support pass that computes the slope line under the player's feet, places the body on that line only when the player came from above, and applies vertical velocity from the slope gradient.
+- Slope support now respects per-character material behavior, so ghost/deadly materials are not treated as walkable slopes.
+- This follows the common platformer-controller pattern: slopes are treated as ground queries/projections, not as generic rigid-body wedges with collidable caps and undersides.
+- Tightened the slope support pickup after user reported remaining corner grabs: larger dead zones at slope endpoints, both current and previous X must be inside the usable range for a first pickup, rising bodies cannot be picked up from below, and snap-below tolerance is much smaller.
+
+Checked:
+- `npm run check` passes.
+
+2026-04-18 black island platform collision correction
+
+Done:
+- Reverted the blue ramp back to the previous solid slippery Matter strip and removed the slope snap/controller path from runtime.
+- Added one-way behavior for thin neutral black platforms (`height <= 34`, unless `oneWay = false`): they collide only when the player lands from above.
+- Invalid contacts with one-way black platforms are disabled before Matter solve, so side/underside/corner rubbing should not push, snag, or allow edge jumps.
+- Tiled neutral objects now preserve an optional `oneWay` property; docs note that thin neutral objects become one-way by default.
+
+Checked:
+- `npm run check` passes.
+- Current Tiled level 2 parses with 9 neutral objects, 6 auto one-way neutral platforms, and 1 slope.
+
+2026-04-18 one-way platform feel stabilization
+
+Done:
+- Stabilized thin black one-way platform contacts with a short sticky top-contact window after a valid landing, so the solver does not alternate every frame between grounded and airborne movement.
+- Invalid one-way contacts now set the Matter pair to sensor-like for that solve instead of forcing `pair.isActive = false`, avoiding stale inactive pairs and sticky/rubbery movement.
+- Blue ramp momentum preservation now applies only to characters whose behavior on that material is `slippery`; characters that are solid on the ramp use normal ground movement feel.
+- Respawn clears one-way platform contact memory.
+
+Checked:
+- `npm run check` passes.
+- Local dev server returned `/?level=2` with HTTP 200.
+
+2026-04-18 one-way landing catch and player feet alignment
+
+Done:
+- Increased the Matter player rectangle height while keeping the same narrow width, so the drawn feet line up with the physical bottom of the character instead of sinking into platforms.
+- Replaced the one-way platform's narrow `snapBelow` landing window with a wider top-crossing catch window, so fast downward falls onto thin islands are treated as valid landings instead of becoming pass-through sensor contacts.
+- Kept the side-inset and sticky top-contact checks, so the earlier fix against side/corner climbing remains in place.
+
+Checked:
+- `npm run check` passes.
+- Local dev server returned `/?level=2` with HTTP 200.

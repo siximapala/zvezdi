@@ -54,7 +54,9 @@ export function addMaterialBlock(scene, group, material, config) {
     .rectangle(config.x, config.y, config.width, config.height, palette.color, 1)
     .setOrigin(0, 0)
     .setStrokeStyle(3, palette.edge, 1);
-  const body = addStaticRectangleBody(scene, material, config);
+  const oneWayPlatform =
+    material === 'neutral' && (config.oneWay === true || (config.oneWay !== false && config.height <= 34 && config.width >= 48));
+  const body = addStaticRectangleBody(scene, material, config, { oneWayPlatform });
   const sensor = addMaterialSensor(scene, material, config);
   const entry = { block, body, sensor, material, config };
 
@@ -135,6 +137,14 @@ export function addTriangleSlope(scene, material, config) {
   const length = Math.hypot(edgeEnd.x - edgeStart.x, edgeEnd.y - edgeStart.y);
   const angle = Math.atan2(edgeEnd.y - edgeStart.y, edgeEnd.x - edgeStart.x);
   const slideDirection = config.direction === 'downRight' ? 1 : -1;
+  const slopeLine = {
+    x1: edgeStart.x,
+    y1: edgeStart.y,
+    x2: edgeEnd.x,
+    y2: edgeEnd.y,
+    minX: Math.min(edgeStart.x, edgeEnd.x),
+    maxX: Math.max(edgeStart.x, edgeEnd.x)
+  };
 
   graphics.fillStyle(palette.color, 1);
   graphics.lineStyle(3, palette.edge, 1);
@@ -159,7 +169,7 @@ export function addTriangleSlope(scene, material, config) {
       }
     }),
     'surface',
-    { slideDirection, slope: true }
+    { slideDirection, slope: true, slopeLine }
   );
   const sensor = addStaticMatterBody(
     scene,
@@ -174,12 +184,13 @@ export function addTriangleSlope(scene, material, config) {
       }
     }),
     'sensor',
-    { slideDirection, slope: true }
+    { slideDirection, slope: true, slopeLine }
   );
   const entry = {
     ...config,
     material,
     slideDirection,
+    slopeLine,
     graphics,
     body,
     sensor
@@ -198,7 +209,7 @@ export function behaviorFor(character, material) {
   return character.surfaces[material] ?? 'ghost';
 }
 
-function addStaticRectangleBody(scene, material, config) {
+function addStaticRectangleBody(scene, material, config, extra = {}) {
   return addStaticMatterBody(
     scene,
     material,
@@ -210,7 +221,13 @@ function addStaticRectangleBody(scene, material, config) {
         mask: COLLISION_CATEGORIES.player
       }
     }),
-    'surface'
+    'surface',
+    {
+      ...extra,
+      topY: config.y,
+      minX: config.x,
+      maxX: config.x + config.width
+    }
   );
 }
 
