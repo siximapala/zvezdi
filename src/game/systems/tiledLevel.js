@@ -42,8 +42,9 @@ export function resolveLevelConfig(scene, sourceLevel) {
 
 export function levelFromTiledMap(map, fallback = {}) {
   const mapProperties = readProperties(map);
-  const worldWidth = numberValue(mapProperties.worldWidth, map.width * map.tilewidth, fallback.world?.width);
-  const worldHeight = numberValue(mapProperties.worldHeight, map.height * map.tileheight, fallback.world?.height);
+  const mapBounds = mapWorldBounds(map);
+  const worldWidth = Math.max(numberValue(mapProperties.worldWidth, fallback.world?.width), mapBounds.width);
+  const worldHeight = Math.max(numberValue(mapProperties.worldHeight, fallback.world?.height), mapBounds.height);
 
   return {
     ...fallback,
@@ -200,6 +201,29 @@ function getObjects(map, aliasKey) {
 
 function readProperties(source) {
   return Object.fromEntries((source.properties ?? []).map((property) => [property.name, property.value]));
+}
+
+function mapWorldBounds(map) {
+  const mapWidth = numberValue(map.width) * numberValue(map.tilewidth);
+  const mapHeight = numberValue(map.height) * numberValue(map.tileheight);
+  let maxX = mapWidth;
+  let maxY = mapHeight;
+
+  for (const layer of map.layers ?? []) {
+    if (layer.type !== 'objectgroup') {
+      continue;
+    }
+
+    for (const object of layer.objects ?? []) {
+      maxX = Math.max(maxX, numberValue(object.x) + numberValue(object.width));
+      maxY = Math.max(maxY, numberValue(object.y) + numberValue(object.height));
+    }
+  }
+
+  return {
+    width: Math.ceil(maxX),
+    height: Math.ceil(maxY)
+  };
 }
 
 function rectConfig(object) {

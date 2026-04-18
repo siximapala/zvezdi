@@ -361,3 +361,17 @@ Checked:
 - `npm run check` passes.
 - Dev server manifest still returns `level-two` with alias `2`, no manifest errors.
 - Local dev server returns HTTP 200 for `/?level=2`.
+
+2026-04-18 automatic world bounds from Tiled size
+
+Done:
+- Fixed level world bounds so expanded Tiled maps do not keep an old invisible Matter wall from stale `worldWidth`.
+- Tiled conversion now uses the largest value from map properties, map pixel size, and object extents for `world.width`/`world.height`.
+- Dev server manifest uses the same bounds rule for discovered `.tmj` files.
+- Updated `assets/levels/level-two.tmj` `worldWidth` to the current map width `2752` to avoid confusing stale data in Tiled.
+- Updated Tiled docs: `worldWidth` is only needed for extra empty space beyond the grid.
+
+Checked:
+- `npm run check` passes.
+- `levelFromTiledMap(level-two.tmj)` reports `worldWidth: 2752`.
+- Dev server manifest reports `worldWidth: 2752`, no manifest errors.

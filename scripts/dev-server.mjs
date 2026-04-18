@@ -54,6 +54,8 @@ async function buildLevelManifest() {
       const properties = readTiledProperties(map);
       const id = stringValue(properties.id, path.basename(entry.name, '.tmj'));
 
+      const bounds = mapWorldBounds(map);
+
       levels.push({
         id,
         alias: nullableString(properties.alias),
@@ -63,8 +65,8 @@ async function buildLevelManifest() {
         startMessage: nullableString(properties.startMessage),
         completeMessage: nullableString(properties.completeMessage),
         nextLevel: nullableString(properties.nextLevel),
-        worldWidth: numberValue(properties.worldWidth, map.width * map.tilewidth),
-        worldHeight: numberValue(properties.worldHeight, map.height * map.tileheight)
+        worldWidth: Math.max(numberValue(properties.worldWidth), bounds.width),
+        worldHeight: Math.max(numberValue(properties.worldHeight), bounds.height)
       });
     } catch (error) {
       errors.push({
@@ -79,6 +81,29 @@ async function buildLevelManifest() {
 
 function readTiledProperties(map) {
   return Object.fromEntries((map.properties ?? []).map((property) => [property.name, property.value]));
+}
+
+function mapWorldBounds(map) {
+  const mapWidth = numberValue(map.width) * numberValue(map.tilewidth);
+  const mapHeight = numberValue(map.height) * numberValue(map.tileheight);
+  let maxX = mapWidth;
+  let maxY = mapHeight;
+
+  for (const layer of map.layers ?? []) {
+    if (layer.type !== 'objectgroup') {
+      continue;
+    }
+
+    for (const object of layer.objects ?? []) {
+      maxX = Math.max(maxX, numberValue(object.x) + numberValue(object.width));
+      maxY = Math.max(maxY, numberValue(object.y) + numberValue(object.height));
+    }
+  }
+
+  return {
+    width: Math.ceil(maxX),
+    height: Math.ceil(maxY)
+  };
 }
 
 function stringValue(...values) {

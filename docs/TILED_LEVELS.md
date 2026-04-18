@@ -116,6 +116,8 @@ nextLevel = level-three
 If a map property is missing, the JS level config remains the fallback for title, messages, and next level.
 `nextLevel` should usually be another level id, but aliases like `4` are also accepted.
 
+World bounds are automatic: the game uses the largest value from `worldWidth`, the Tiled map size, and object extents. If you extend the map in Tiled, the playable world expands with it. Use `worldWidth` only when you want extra empty space beyond the visible grid.
+
 The dev server automatically scans `assets/levels/*.tmj` and exposes them to the game through `assets/levels/manifest.json`. That means a new Tiled file does not need a new scene class.
 
 ## Adding another Tiled level

@@ -70,14 +70,14 @@
                  "y":640
                 }, 
                 {
-                 "height":130,
+                 "height":128,
                  "id":11,
                  "name":"ramp-step-1",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":151.333333333333,
+                 "width":160,
                  "x":416,
                  "y":608
                 }, 
@@ -130,16 +130,16 @@
                  "y":384
                 }, 
                 {
-                 "height":130,
+                 "height":96,
                  "id":17,
                  "name":"right-floor",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":672,
+                 "width":1024,
                  "x":1728,
-                 "y":608
+                 "y":640
                 }, 
                 {
                  "height":32,
@@ -151,7 +151,7 @@
                  "visible":true,
                  "width":120,
                  "x":1824,
-                 "y":480
+                 "y":512
                 }, 
                 {
                  "height":32,
@@ -163,7 +163,43 @@
                  "visible":true,
                  "width":118,
                  "x":1984,
-                 "y":448
+                 "y":480
+                }, 
+                {
+                 "height":224,
+                 "id":86,
+                 "name":"ramp-step-1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":512,
+                 "y":416
+                }, 
+                {
+                 "height":96,
+                 "id":87,
+                 "name":"ramp-step-1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":512,
+                 "x":576,
+                 "y":640
+                }, 
+                {
+                 "height":32,
+                 "id":88,
+                 "name":"ramp-step-1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":512,
+                 "y":384
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -228,9 +264,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":416,
+                 "width":608,
                  "x":1888,
-                 "y":576
+                 "y":608
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -300,6 +336,35 @@
                  "width":0,
                  "x":2208,
                  "y":256
+                }, 
+                {
+                 "height":0,
+                 "id":85,
+                 "name":"vine-3",
+                 "opacity":1,
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"maxLength",
+                         "type":"float",
+                         "value":520
+                        }, 
+                        {
+                         "name":"minLength",
+                         "type":"float",
+                         "value":74
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"float",
+                         "value":560
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2656,
+                 "y":160
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -343,7 +408,7 @@
                  "visible":true,
                  "width":96,
                  "x":1728,
-                 "y":576
+                 "y":608
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -387,7 +452,7 @@
                  "visible":true,
                  "width":640,
                  "x":1088,
-                 "y":608
+                 "y":640
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -409,8 +474,8 @@
                  "type":"",
                  "visible":true,
                  "width":48,
-                 "x":2208,
-                 "y":544
+                 "x":2560,
+                 "y":576
                 }, 
                 {
                  "height":58,
@@ -421,8 +486,8 @@
                  "type":"",
                  "visible":true,
                  "width":48,
-                 "x":2336,
-                 "y":544
+                 "x":2688,
+                 "y":576
                 }, 
                 {
                  "height":58,
@@ -433,8 +498,8 @@
                  "type":"",
                  "visible":true,
                  "width":48,
-                 "x":2208,
-                 "y":256
+                 "x":2624,
+                 "y":160
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -490,18 +555,18 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":85,
+ "nextobjectid":89,
  "orientation":"orthogonal",
  "properties":[
-        {
-         "name":"id",
-         "type":"string",
-         "value":"level-two"
-        }, 
         {
          "name":"alias",
          "type":"string",
          "value":"2"
+        }, 
+        {
+         "name":"id",
+         "type":"string",
+         "value":"level-two"
         }, 
         {
          "name":"nextLevel",
@@ -516,7 +581,7 @@
         {
          "name":"worldWidth",
          "type":"int",
-         "value":2380
+         "value":2752
         }],
  "renderorder":"right-down",
  "tiledversion":"1.12.1",
@@ -525,5 +590,5 @@
  "tilewidth":32,
  "type":"map",
  "version":"1.10",
- "width":75
+ "width":86
 }
