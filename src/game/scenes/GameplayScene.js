@@ -63,6 +63,12 @@ const PLAYER_BODY = {
   height: 76
 };
 
+const GROUND_CONTACT = {
+  topGraceAbove: 30,
+  topGraceBelow: 18,
+  minHorizontalOverlap: 4
+};
+
 export class GameplayScene extends PhaserScene {
   constructor(sceneKey, level) {
     super(sceneKey);
@@ -204,7 +210,7 @@ export class GameplayScene extends PhaserScene {
       sprite.setScale(1.32);
       sprite.setRectangle(PLAYER_BODY.width, PLAYER_BODY.height);
       sprite.setFixedRotation();
-      sprite.setFriction(0.03, 0.02, 0.12);
+      sprite.setFriction(0, 0.018, 0);
       sprite.setFrictionAir(0.018);
       sprite.setBounce(0.01);
       sprite.setMass(2.2);
@@ -419,9 +425,11 @@ export class GameplayScene extends PhaserScene {
     const upperBottom = upper.bounds.max.y;
     const lowerTop = lower.bounds.min.y;
     const centerAbove = upper.position.y < lower.position.y - centerPadding;
-    const closeToTop = upperBottom >= lowerTop - 28 && upperBottom <= lower.bounds.max.y + 12;
+    const horizontalOverlap = Math.min(upper.bounds.max.x, lower.bounds.max.x) - Math.max(upper.bounds.min.x, lower.bounds.min.x);
+    const closeToTop =
+      upperBottom >= lowerTop - GROUND_CONTACT.topGraceAbove && upperBottom <= lowerTop + GROUND_CONTACT.topGraceBelow;
 
-    return centerAbove && closeToTop;
+    return centerAbove && horizontalOverlap >= GROUND_CONTACT.minHorizontalOverlap && closeToTop;
   }
 
   rootBody(body) {
@@ -598,8 +606,8 @@ export class GameplayScene extends PhaserScene {
   createDoorBody(config) {
     const body = this.matter.add.rectangle(config.x + config.width / 2, config.y + config.height / 2, config.width, config.height, {
       isStatic: true,
-      friction: 0.82,
-      frictionStatic: 1,
+      friction: 0,
+      frictionStatic: 0,
       collisionFilter: {
         category: COLLISION_CATEGORIES.door,
         mask: COLLISION_CATEGORIES.player
@@ -612,8 +620,8 @@ export class GameplayScene extends PhaserScene {
   createBridgeBody(config) {
     const body = this.matter.add.rectangle(config.x + config.width / 2, config.y + config.height / 2, config.width, config.height, {
       isStatic: true,
-      friction: 0.86,
-      frictionStatic: 1,
+      friction: 0,
+      frictionStatic: 0,
       collisionFilter: {
         category: COLLISION_CATEGORIES.neutral,
         mask: COLLISION_CATEGORIES.player

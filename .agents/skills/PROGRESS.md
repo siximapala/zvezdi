@@ -375,3 +375,14 @@ Checked:
 - `npm run check` passes.
 - `levelFromTiledMap(level-two.tmj)` reports `worldWidth: 2752`.
 - Dev server manifest reports `worldWidth: 2752`, no manifest errors.
+
+2026-04-18 solid wall anti-scrape fix
+
+Done:
+- Tightened grounded detection for solid rectangles. A contact counts as "standing on top" only near the top edge with horizontal overlap, not anywhere along a tall wall's side.
+- Removed tangential friction/static friction from solid material rectangles, doors, bridges, and player bodies. Movement damping remains controller-driven, so floors still feel controlled while vertical walls no longer act like sticky climbing surfaces.
+- Kept blue ramp's low friction separately so the existing icy ramp behavior stays intact.
+
+Checked:
+- `npm run check` passes.
+- Local dev server returns HTTP 200 for `/?level=2`.

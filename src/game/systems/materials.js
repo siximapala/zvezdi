@@ -18,10 +18,10 @@ const MATERIAL_CATEGORY = {
 };
 
 const MATERIAL_FRICTION = {
-  neutral: { friction: 0.86, frictionStatic: 1 },
-  pink: { friction: 0.96, frictionStatic: 1 },
+  neutral: { friction: 0, frictionStatic: 0 },
+  pink: { friction: 0, frictionStatic: 0 },
   blue: { friction: 0.02, frictionStatic: 0.02 },
-  green: { friction: 0.74, frictionStatic: 0.82 }
+  green: { friction: 0, frictionStatic: 0 }
 };
 
 export function createMaterialGroups() {
