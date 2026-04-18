@@ -1,5 +1,5 @@
 import { createReadStream } from 'node:fs';
-import { stat } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,6 +22,8 @@ const types = new Map([
   ['.jpeg', 'image/jpeg']
 ]);
 
+const LEVEL_MANIFEST_PATH = '/assets/levels/manifest.json';
+
 function safePath(requestUrl) {
   const url = new URL(requestUrl, `http://${host}:${startPort}`);
   const rawPath = decodeURIComponent(url.pathname);
@@ -35,7 +37,84 @@ function safePath(requestUrl) {
   return filePath;
 }
 
+async function buildLevelManifest() {
+  const levelsDir = path.join(root, 'assets', 'levels');
+  const entries = await readdir(levelsDir, { withFileTypes: true });
+  const levels = [];
+  const errors = [];
+
+  for (const entry of entries) {
+    if (!entry.isFile() || path.extname(entry.name).toLowerCase() !== '.tmj') {
+      continue;
+    }
+
+    try {
+      const filePath = path.join(levelsDir, entry.name);
+      const map = JSON.parse(await readFile(filePath, 'utf8'));
+      const properties = readTiledProperties(map);
+      const id = stringValue(properties.id, path.basename(entry.name, '.tmj'));
+
+      levels.push({
+        id,
+        alias: nullableString(properties.alias),
+        path: `assets/levels/${entry.name}`,
+        tiledKey: `${id}-tiled`,
+        title: nullableString(properties.title),
+        startMessage: nullableString(properties.startMessage),
+        completeMessage: nullableString(properties.completeMessage),
+        nextLevel: nullableString(properties.nextLevel),
+        worldWidth: numberValue(properties.worldWidth, map.width * map.tilewidth),
+        worldHeight: numberValue(properties.worldHeight, map.height * map.tileheight)
+      });
+    } catch (error) {
+      errors.push({
+        file: entry.name,
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  }
+
+  return { levels, errors };
+}
+
+function readTiledProperties(map) {
+  return Object.fromEntries((map.properties ?? []).map((property) => [property.name, property.value]));
+}
+
+function stringValue(...values) {
+  return values.find((value) => value !== undefined && value !== null && value !== '') ?? '';
+}
+
+function nullableString(value) {
+  if (value === undefined || value === null || value === '') {
+    return null;
+  }
+
+  const result = String(value);
+  return result === 'null' || result === 'none' ? null : result;
+}
+
+function numberValue(value, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
 function handleRequest(request, response) {
+  const url = new URL(request.url, `http://${host}:${startPort}`);
+
+  if (url.pathname === LEVEL_MANIFEST_PATH) {
+    buildLevelManifest()
+      .then((manifest) => {
+        response.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        response.end(JSON.stringify(manifest, null, 2));
+      })
+      .catch((error) => {
+        response.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+        response.end(error instanceof Error ? error.message : 'Failed to build level manifest');
+      });
+    return;
+  }
+
   const filePath = safePath(request.url);
 
   if (!filePath) {

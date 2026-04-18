@@ -5,7 +5,7 @@ export const LEVEL_TWO = {
   title: 'Уровень 2',
   startMessage: 'Мята разгоняется на синей рампе, перелетает пропасть лозой и включает мост для всех',
   completeMessage: 'Уровень 2 пройден. Enter: дальше',
-  nextLevel: 'LevelThreeScene',
+  nextLevel: 'level-three',
   world: {
     width: 2380,
     height: 720

@@ -5,10 +5,10 @@ The game now supports object-only Tiled maps (`.tmj`). Tiled is used as a level 
 ## Quick loop
 
 1. Install Tiled: https://www.mapeditor.org/
-2. Open `assets/levels/level-two.tmj`.
+2. Open an existing `.tmj` in `assets/levels`, or save a new Tiled map there.
 3. Move, resize, duplicate, or add objects in the object layers.
 4. Save the file as JSON map (`.tmj`).
-5. Run the game and open `/?level=2`.
+5. Run the game and open `/?level=2`, `/?level=level-two`, or the id of your new map.
 6. Use `Ctrl+F5` in the browser after saving the map.
 
 ## Important rule
@@ -107,34 +107,33 @@ Set these on the map itself when needed:
 
 ```text
 id = level-two
+alias = 2
 worldWidth = 2380
 worldHeight = 720
-nextLevel = LevelThreeScene
+nextLevel = level-three
 ```
 
 If a map property is missing, the JS level config remains the fallback for title, messages, and next level.
+`nextLevel` should usually be another level id, but aliases like `4` are also accepted.
+
+The dev server automatically scans `assets/levels/*.tmj` and exposes them to the game through `assets/levels/manifest.json`. That means a new Tiled file does not need a new scene class.
 
 ## Adding another Tiled level
 
-1. Copy `assets/levels/level-two.tmj` to a new file.
-2. Create or update a JS level config with:
+1. Copy `assets/levels/level-two.tmj` to a new file, for example `assets/levels/level-four.tmj`.
+2. In Tiled, set map properties:
 
-```js
-export const LEVEL_FOUR = {
-  id: 'level-four',
-  tiledKey: 'level-four-tiled',
-  tiledPath: 'assets/levels/level-four.tmj',
-  title: 'Level 4',
-  startMessage: '...',
-  completeMessage: '...',
-  nextLevel: null,
-  world: { width: 1280, height: 720 },
-  neutral: [],
-  materials: [],
-  notes: [],
-  goals: []
-};
+```text
+id = level-four
+alias = 4
+title = Level 4
+nextLevel = null
+worldWidth = 1280
+worldHeight = 720
 ```
 
-3. Add that config to `LEVEL_ASSETS` in `BootScene`.
-4. Add a scene class or reuse `LevelOneScene` with the new config.
+3. Save the file.
+4. Refresh the browser with `Ctrl+F5`.
+5. Use `/?level=4` or `/?level=level-four`.
+
+Optional: add a JS config only if you want a hand-written fallback for a level that must work without the dev server manifest.

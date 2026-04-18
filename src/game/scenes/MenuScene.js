@@ -1,4 +1,5 @@
 import { CHARACTERS } from '../config/characters.js';
+import { firstLevelEntry } from '../config/level-registry.js';
 import { hideHud } from '../systems/hud.js';
 
 const PhaserScene = window.Phaser?.Scene ?? class {};
@@ -65,9 +66,13 @@ export class MenuScene extends PhaserScene {
       sprite.setDepth(2);
     });
 
-    this.input.keyboard.once('keydown-ENTER', () => this.scene.start('LevelOneScene'));
-    this.input.keyboard.once('keydown-SPACE', () => this.scene.start('LevelOneScene'));
-    this.input.once('pointerdown', () => this.scene.start('LevelOneScene'));
+    this.input.keyboard.once('keydown-ENTER', () => this.startFirstLevel());
+    this.input.keyboard.once('keydown-SPACE', () => this.startFirstLevel());
+    this.input.once('pointerdown', () => this.startFirstLevel());
+  }
+
+  startFirstLevel() {
+    this.scene.start(firstLevelEntry().sceneKey);
   }
 
   drawLogo() {

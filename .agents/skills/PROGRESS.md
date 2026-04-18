@@ -318,3 +318,33 @@ Done:
 Checked:
 - `npm run check` passes.
 - Local dev server returned `/?level=2` with HTTP 200.
+
+2026-04-18 gameplay scene and level registry refactor
+
+Done:
+- Renamed the shared runtime from `LevelOneScene` to `GameplayScene`.
+- Removed per-level scene wrapper files for level 2 and level 3.
+- Added `src/game/config/level-registry.js`; `src/main.js` now creates gameplay scene classes from the registry.
+- Boot and menu now resolve levels through the registry instead of hardcoded `LevelOneScene`/`LevelTwoScene`/`LevelThreeScene` names.
+- Scene keys now use level ids (`level-one`, `level-two`, `level-three`), and `nextLevel` values use those ids.
+- Updated Tiled docs so new levels are added to `LEVEL_REGISTRY`, not by adding a scene class.
+
+Checked:
+- `npm run check` passes.
+- `assets/levels/level-two.tmj` still parses as JSON.
+- Local dev server returned `/?level=2` with HTTP 200.
+
+2026-04-18 automatic Tiled level discovery
+
+Done:
+- Dev server now generates `assets/levels/manifest.json` dynamically by scanning `assets/levels/*.tmj`.
+- BootScene loads that manifest, merges discovered Tiled maps with the built-in fallback registry, loads all needed `.tmj` files, and registers GameplayScene instances at runtime.
+- `src/main.js` no longer creates gameplay scenes up front; BootScene owns runtime level registration.
+- New Tiled maps can be added by saving a `.tmj` file under `assets/levels` with map properties like `id`, `alias`, `worldWidth`, `worldHeight`, and `nextLevel`.
+- `nextLevel` can resolve either a scene/level id or an alias.
+- Updated docs/README for the faster Tiled-first workflow.
+
+Checked:
+- `npm run check` passes.
+- Dev server manifest returns `level-two` with alias `2`, no manifest errors.
+- Local dev server returns HTTP 200 for both `/?level=level-two` and `/?level=2`.

@@ -499,9 +499,14 @@
          "value":"level-two"
         }, 
         {
+         "name":"alias",
+         "type":"string",
+         "value":"2"
+        }, 
+        {
          "name":"nextLevel",
          "type":"string",
-         "value":"LevelThreeScene"
+         "value":"level-three"
         }, 
         {
          "name":"worldHeight",

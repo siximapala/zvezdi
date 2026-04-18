@@ -1,5 +1,5 @@
 ﻿import { CHARACTERS, CHARACTER_BY_ID } from '../config/characters.js';
-import { LEVEL_ONE, MATERIALS } from '../config/level-one.js';
+import { MATERIALS } from '../config/level-one.js';
 import { playCharacterAnimation } from '../systems/animations.js';
 import { hideHud, setHudMessage, updateHud } from '../systems/hud.js';
 import {
@@ -20,6 +20,7 @@ import {
   createMaterialGroups
 } from '../systems/materials.js';
 import { createControlSet, updatePlayerMovement } from '../systems/playerControls.js';
+import { levelEntryFor } from '../config/level-registry.js';
 import { resolveLevelConfig } from '../systems/tiledLevel.js';
 
 const PhaserScene = window.Phaser?.Scene ?? class {};
@@ -60,8 +61,8 @@ const PLAYER_BODY = {
   height: 76
 };
 
-export class LevelOneScene extends PhaserScene {
-  constructor(sceneKey = 'LevelOneScene', level = LEVEL_ONE) {
+export class GameplayScene extends PhaserScene {
+  constructor(sceneKey, level) {
     super(sceneKey);
     this.sourceLevel = level;
     this.level = level;
@@ -136,7 +137,7 @@ export class LevelOneScene extends PhaserScene {
     }
 
     if (this.completed && Phaser.Input.Keyboard.JustDown(this.nextKey) && this.level.nextLevel) {
-      this.scene.start(this.level.nextLevel);
+      this.scene.start(levelEntryFor(this.level.nextLevel)?.sceneKey ?? this.level.nextLevel);
       return;
     }
 
