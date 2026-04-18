@@ -36,7 +36,7 @@ export class MenuScene extends PhaserScene {
     const lines = [
       'Искра: A / D / W',
       'Волна: ← / → / ↑',
-      'Мята: J / L / I',
+      'Мята: J / L / I / M / U',
       'R: заново, Esc: меню'
     ];
 

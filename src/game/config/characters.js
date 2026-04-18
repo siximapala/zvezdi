@@ -58,7 +58,7 @@ export const CHARACTERS = [
       right: 'L',
       jump: 'I',
       down: 'M',
-      ability: 'K'
+      ability: 'U'
     },
     surfaces: {
       pink: 'deadly',

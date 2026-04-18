@@ -472,13 +472,20 @@ export class GameplayScene extends PhaserScene {
           length: Phaser.Math.Clamp(distance, anchor.minLength ?? 74, anchor.maxLength ?? anchor.radius),
           attachedAt: time
         };
-        this.currentMessage = 'Мята держится лозой. I/M - длина, J/L - раскачка, K - отпустить';
+        this.currentMessage = 'Мята держится лозой. I/M - длина, J/L - раскачка, U - отпустить';
         setHudMessage(this.currentMessage);
       }
     }
 
     if (green.grapple) {
       const { anchor } = green.grapple;
+
+      if (!this.hasGrappleLineOfSight(green, anchor)) {
+        green.grapple = null;
+        this.clearGrappleLine(green);
+        return;
+      }
+
       const body = green.sprite.body;
       const tuning = this.gameplayTuning;
       const dx = green.sprite.x - anchor.x;
@@ -534,13 +541,35 @@ export class GameplayScene extends PhaserScene {
     for (const anchor of this.level.grappleAnchors ?? []) {
       const distance = Math.hypot(anchor.x - player.sprite.x, anchor.y - player.sprite.y);
 
-      if (distance <= anchor.radius && distance < bestDistance) {
+      if (distance <= anchor.radius && distance < bestDistance && this.hasGrappleLineOfSight(player, anchor)) {
         best = anchor;
         bestDistance = distance;
       }
     }
 
     return best;
+  }
+
+  hasGrappleLineOfSight(player, anchor) {
+    const Matter = window.Matter ?? window.Phaser?.Physics?.Matter?.Matter;
+    const query = Matter?.Query;
+
+    if (!query?.ray) {
+      return true;
+    }
+
+    const from = { x: player.sprite.x, y: player.sprite.y };
+    const to = { x: anchor.x, y: anchor.y };
+    const bodies = (Matter.Composite?.allBodies?.(this.matter.world.engine.world) ?? []).filter((body) => {
+      const root = this.rootBody(body);
+      return root && !root.isSensor && (root.gameKind === 'surface' || root.gameKind === 'door');
+    });
+    const hits = query.ray(bodies, from, to, 6);
+
+    return !hits.some((hit) => {
+      const root = this.rootBody(hit.body);
+      return root && !root.isSensor && (root.gameKind === 'surface' || root.gameKind === 'door');
+    });
   }
 
   drawGrappleLine(player, anchor) {
@@ -757,6 +786,11 @@ export class GameplayScene extends PhaserScene {
   respawnPlayer(player, reason) {
     if (player.respawning || this.completed) {
       return;
+    }
+
+    if (player.grapple) {
+      player.grapple = null;
+      this.clearGrappleLine(player);
     }
 
     player.respawning = true;

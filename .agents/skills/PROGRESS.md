@@ -386,3 +386,17 @@ Done:
 Checked:
 - `npm run check` passes.
 - Local dev server returns HTTP 200 for `/?level=2`.
+
+2026-04-18 grapple visibility and controls
+
+Done:
+- Changed Green's vine toggle from `K` to `U`; length/swing controls stay on `I/M` and `J/L`.
+- Added line-of-sight checks for vine anchors using Matter ray queries. Real surfaces and doors block attachment; sensors and players do not.
+- Existing vine attachments detach if a wall/door starts blocking the rope line.
+- Green's vine now detaches immediately when Green dies/respawns.
+- Updated level text, menu controls, README, and the Tiled level note from `K` to `U`.
+
+Checked:
+- `npm run check` passes.
+- Dev server manifest still has no errors.
+- Local dev server returns HTTP 200 for `/?level=2`.
