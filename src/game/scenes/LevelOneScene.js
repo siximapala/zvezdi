@@ -1,4 +1,4 @@
-import { CHARACTERS, CHARACTER_BY_ID } from '../config/characters.js';
+﻿import { CHARACTERS, CHARACTER_BY_ID } from '../config/characters.js';
 import { LEVEL_ONE, MATERIALS } from '../config/level-one.js';
 import { playCharacterAnimation } from '../systems/animations.js';
 import { hideHud, setHudMessage, updateHud } from '../systems/hud.js';
@@ -51,6 +51,7 @@ export class LevelOneScene extends PhaserScene {
     this.activatorState = {};
     this.activators = [];
     this.doors = [];
+    this.bridges = [];
     this.slopes = [];
     this.bodyToPlayer = new Map();
     this.grappleLines = new Map();
@@ -78,9 +79,10 @@ export class LevelOneScene extends PhaserScene {
     this.resetKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     this.menuKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.nextKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+    const matterWorld = this.matter.world;
     this.events.once('shutdown', () => {
-      this.matter.world.off('collisionstart', this.handleMatterCollision, this);
-      this.matter.world.off('collisionactive', this.handleMatterCollision, this);
+      matterWorld?.off?.('collisionstart', this.handleMatterCollision, this);
+      matterWorld?.off?.('collisionactive', this.handleMatterCollision, this);
       removeDevTuningPanel();
       hideHud();
     });
@@ -104,15 +106,13 @@ export class LevelOneScene extends PhaserScene {
       return;
     }
 
-    this.updateGrapples(time);
-
     for (const player of this.players) {
       updatePlayerMovement(player, time);
       this.updateLight(player);
       playCharacterAnimation(player.sprite, player.character, 'idle');
 
       if (player.sprite.y > this.level.world.height + 90) {
-        this.respawnPlayer(player, 'РїР°РґРµРЅРёРµ');
+        this.respawnPlayer(player, 'Р С—Р В°Р Т‘Р ВµР Р…Р С‘Р Вµ');
       }
     }
 
@@ -327,39 +327,53 @@ export class LevelOneScene extends PhaserScene {
     }
 
     if (green.keys.ability && Phaser.Input.Keyboard.JustDown(green.keys.ability)) {
+      if (green.grapple) {
+        green.grapple = null;
+        this.clearGrappleLine(green);
+        return;
+      }
+
       const anchor = this.findGrappleAnchor(green);
 
       if (anchor) {
-        green.grapple = { anchor, until: time + anchor.duration };
-        this.currentMessage = 'РњСЏС‚Р° Р·Р°С†РµРїРёР»Р°СЃСЊ Р»РѕР·РѕР№';
+        const distance = Math.hypot(anchor.x - green.sprite.x, anchor.y - green.sprite.y);
+        green.grapple = {
+          anchor,
+          length: Phaser.Math.Clamp(distance, anchor.minLength ?? 74, anchor.maxLength ?? anchor.radius)
+        };
+        this.currentMessage = 'Мята держится лозой. I/M - длина, J/L - раскачка, K - отпустить';
         setHudMessage(this.currentMessage);
       }
     }
 
-    if (green.grapple && time <= green.grapple.until) {
+    if (green.grapple) {
       const { anchor } = green.grapple;
       const body = green.sprite.body;
-      const dx = anchor.x - green.sprite.x;
-      const dy = anchor.y - green.sprite.y;
+      const dx = green.sprite.x - anchor.x;
+      const dy = green.sprite.y - anchor.y;
       const distance = Math.max(1, Math.hypot(dx, dy));
-      const pull = anchor.pull / 250;
+      const minLength = anchor.minLength ?? 74;
+      const maxLength = anchor.maxLength ?? anchor.radius;
+      const lengthDelta = (green.keys.jump.isDown ? -4.6 : 0) + (green.keys.down?.isDown ? 4.6 : 0);
+
+      green.grapple.length = Phaser.Math.Clamp(green.grapple.length + lengthDelta, minLength, maxLength);
+
+      const normalX = dx / distance;
+      const normalY = dy / distance;
+      const radialVelocity = body.velocity.x * normalX + body.velocity.y * normalY;
+      const stretch = distance - green.grapple.length;
+      const correction = stretch * 0.032 + radialVelocity * 0.34;
 
       green.sprite.setVelocity(
-        Phaser.Math.Clamp(body.velocity.x + (dx / distance) * pull, -13, 13),
-        Phaser.Math.Clamp(body.velocity.y + (dy / distance) * pull, -16, 16)
+        Phaser.Math.Clamp(body.velocity.x - normalX * correction, -15, 15),
+        Phaser.Math.Clamp(body.velocity.y - normalY * correction, -17, 17)
       );
       green.slopeMomentumUntil = time + 700;
       this.drawGrappleLine(green, anchor);
-
-      if (distance < 54) {
-        green.grapple = null;
-      }
     } else {
-      green.grapple = null;
       this.clearGrappleLine(green);
     }
   }
-
   findGrappleAnchor(player) {
     let best = null;
     let bestDistance = Infinity;
@@ -425,6 +439,15 @@ export class LevelOneScene extends PhaserScene {
 
       this.doors.push({ config, door, body, open: false });
     }
+
+    for (const config of this.level.bridges ?? []) {
+      const platform = this.add
+        .rectangle(config.x, config.y, config.width, config.height, config.color ?? 0x111111, 0.16)
+        .setOrigin(0, 0)
+        .setStrokeStyle(3, config.color ?? 0x111111, 0.5);
+
+      this.bridges.push({ config, platform, body: null, active: false });
+    }
   }
 
   createDoorBody(config) {
@@ -441,6 +464,20 @@ export class LevelOneScene extends PhaserScene {
     return annotateBody(body, { gameKind: 'door', material: 'neutral' });
   }
 
+  createBridgeBody(config) {
+    const body = this.matter.add.rectangle(config.x + config.width / 2, config.y + config.height / 2, config.width, config.height, {
+      isStatic: true,
+      friction: 0.86,
+      frictionStatic: 1,
+      collisionFilter: {
+        category: COLLISION_CATEGORIES.neutral,
+        mask: COLLISION_CATEGORIES.player
+      }
+    });
+
+    return annotateBody(body, { gameKind: 'surface', material: 'neutral', bridge: true });
+  }
+
   updateMechanics() {
     const Phaser = window.Phaser;
 
@@ -451,7 +488,7 @@ export class LevelOneScene extends PhaserScene {
         return matchesCharacter && Phaser.Geom.Intersects.RectangleToRectangle(player.sprite.getBounds(), zone.getBounds());
       });
 
-      this.activatorState[config.id] = pressed;
+      this.activatorState[config.id] = config.latch ? this.activatorState[config.id] || pressed : pressed;
       zone.setFillStyle(config.color, pressed ? 0.82 : 0.28);
       zone.setScale(1, pressed ? 0.72 : 1);
     }
@@ -467,8 +504,17 @@ export class LevelOneScene extends PhaserScene {
       this.setDoorOpen(entry, targetOpen);
 
       if (entry.open) {
-        this.currentMessage = 'РџСЂРѕС…РѕРґ РѕС‚РєСЂС‹С‚';
+        this.currentMessage = 'Р СџРЎР‚Р С•РЎвЂ¦Р С•Р Т‘ Р С•РЎвЂљР С”РЎР‚РЎвЂ№РЎвЂљ';
         setHudMessage(this.currentMessage);
+      }
+    }
+
+    for (const entry of this.bridges) {
+      const shouldAppear = entry.config.appearsWhen.every((activatorId) => this.activatorState[activatorId]);
+      const targetActive = entry.config.latch ? entry.active || shouldAppear : shouldAppear;
+
+      if (entry.active !== targetActive) {
+        this.setBridgeActive(entry, targetActive);
       }
     }
   }
@@ -482,6 +528,19 @@ export class LevelOneScene extends PhaserScene {
       entry.body = null;
     } else if (!open && !entry.body) {
       entry.body = this.createDoorBody(entry.config);
+    }
+  }
+
+  setBridgeActive(entry, active) {
+    entry.active = active;
+    entry.platform.setAlpha(active ? 1 : 0.16);
+    entry.platform.setStrokeStyle(3, entry.config.color ?? 0x111111, active ? 1 : 0.5);
+
+    if (active && !entry.body) {
+      entry.body = this.createBridgeBody(entry.config);
+    } else if (!active && entry.body) {
+      this.matter.world.remove(entry.body);
+      entry.body = null;
     }
   }
 
@@ -664,3 +723,4 @@ export class LevelOneScene extends PhaserScene {
     graphics.strokePath();
   }
 }
+
