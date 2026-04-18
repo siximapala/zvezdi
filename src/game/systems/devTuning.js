@@ -1,8 +1,8 @@
-const STORAGE_KEY = 'zvezdi.devTuning.v1';
+const STORAGE_KEY = 'zvezdi.devTuning.v2';
 
 export const DEFAULT_TUNING = {
-  speedScale: 1.35,
-  accelerationScale: 1.45,
+  speedScale: 1.9,
+  accelerationScale: 1.9,
   airControlScale: 1.2,
   jumpScale: 1.08,
   rampForceScale: 1.7,

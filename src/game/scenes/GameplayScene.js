@@ -48,6 +48,8 @@ const GRAPPLE_TUNING = {
 
 const ONE_WAY_PLATFORM = {
   sideInset: 10,
+  standingOverlap: 1,
+  landingOverlap: 2,
   previousAboveGrace: 6,
   catchAbove: 38,
   catchBelow: 56,
@@ -369,10 +371,14 @@ export class GameplayScene extends PhaserScene {
     const previousBottom = (player.positionPrev?.y ?? player.position.y) + playerHeight / 2;
     const currentBottom = player.bounds.max.y;
     const topY = platform.topY ?? platform.bounds.min.y;
-    const minX = (platform.minX ?? platform.bounds.min.x) + ONE_WAY_PLATFORM.sideInset;
-    const maxX = (platform.maxX ?? platform.bounds.max.x) - ONE_WAY_PLATFORM.sideInset;
-    const centerX = player.position.x;
-    const centerInside = centerX >= minX && centerX <= maxX;
+    const platformMinX = platform.minX ?? platform.bounds.min.x;
+    const platformMaxX = platform.maxX ?? platform.bounds.max.x;
+    const innerMinX = platformMinX + ONE_WAY_PLATFORM.sideInset;
+    const innerMaxX = platformMaxX - ONE_WAY_PLATFORM.sideInset;
+    const standingOverlap = Math.min(player.bounds.max.x, platformMaxX) - Math.max(player.bounds.min.x, platformMinX);
+    const landingOverlap = Math.min(player.bounds.max.x, innerMaxX) - Math.max(player.bounds.min.x, innerMinX);
+    const stillOverPlatform = standingOverlap >= ONE_WAY_PLATFORM.standingOverlap;
+    const canLandOnPlatform = landingOverlap >= ONE_WAY_PLATFORM.landingOverlap;
     const recentlyGroundedHere =
       playerConfig.oneWayPlatformBody === platform && this.time.now - playerConfig.oneWayPlatformAt <= ONE_WAY_PLATFORM.stickMs;
     const cameFromAbove = previousBottom <= topY + ONE_WAY_PLATFORM.previousAboveGrace;
@@ -380,12 +386,12 @@ export class GameplayScene extends PhaserScene {
     const fallingOrResting = player.velocity.y >= -1.2;
     const stillStandingOnTop =
       recentlyGroundedHere &&
-      centerInside &&
+      stillOverPlatform &&
       currentBottom >= topY - 32 &&
       currentBottom <= topY + ONE_WAY_PLATFORM.stickBelow &&
       player.velocity.y >= ONE_WAY_PLATFORM.upwardGraceVelocity;
 
-    return stillStandingOnTop || (centerInside && cameFromAbove && crossedTop && fallingOrResting);
+    return stillStandingOnTop || (canLandOnPlatform && cameFromAbove && crossedTop && fallingOrResting);
   }
 
   markGrounded(player, material, time, body) {

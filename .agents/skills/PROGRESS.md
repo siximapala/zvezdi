@@ -348,3 +348,16 @@ Checked:
 - `npm run check` passes.
 - Dev server manifest returns `level-two` with alias `2`, no manifest errors.
 - Local dev server returns HTTP 200 for both `/?level=level-two` and `/?level=2`.
+
+2026-04-18 movement speed and one-way edge support
+
+Done:
+- Raised default movement tuning: speed scale `1.35 -> 1.9`, acceleration scale `1.45 -> 1.9`.
+- Bumped dev tuning storage to `zvezdi.devTuning.v2`, so old browser-saved values do not silently override the new defaults.
+- Changed one-way platform continuation from center-inside checks to body-overlap checks. After a valid landing, the platform stays solid until the player's physical body fully leaves it.
+- Initial one-way landing still uses the inner platform region, preserving the side/corner anti-climb behavior.
+
+Checked:
+- `npm run check` passes.
+- Dev server manifest still returns `level-two` with alias `2`, no manifest errors.
+- Local dev server returns HTTP 200 for `/?level=2`.
