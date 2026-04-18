@@ -26,7 +26,7 @@ export const LEVEL_ONE = {
   title: 'Уровень 1',
   startMessage: 'Доведите всех троих до своих световых ворот',
   completeMessage: 'Уровень пройден. Enter: дальше',
-  nextLevel: 'LevelTwoScene',
+  nextLevel: 'level-two',
   world: {
     width: 1720,
     height: 720

@@ -39,6 +39,6 @@ export function playCharacterAnimation(sprite, character, state) {
        repeat: -1
      });
 
-  LevelOneScene only calls playCharacterAnimation, so character art can change
+  GameplayScene only calls playCharacterAnimation, so character art can change
   without rewriting movement, material rules, or level logic.
 */

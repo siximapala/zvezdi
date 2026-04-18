@@ -1,11 +1,13 @@
 export const LEVEL_TWO = {
   id: 'level-two',
+  tiledKey: 'level-two-tiled',
+  tiledPath: 'assets/levels/level-two.tmj',
   title: 'Уровень 2',
-  startMessage: 'Мята разгоняется на синей горке, прыгает через разрыв и цепляется лозой: K',
+  startMessage: 'Мята разгоняется на синей рампе, перелетает пропасть лозой и включает мост для всех',
   completeMessage: 'Уровень 2 пройден. Enter: дальше',
-  nextLevel: 'LevelThreeScene',
+  nextLevel: 'level-three',
   world: {
-    width: 2200,
+    width: 2380,
     height: 720
   },
   neutral: [
@@ -16,28 +18,42 @@ export const LEVEL_TWO = {
     { x: 514, y: 464, width: 96, height: 24 },
     { x: 514, y: 412, width: 82, height: 24 },
     { x: 486, y: 384, width: 28, height: 72 },
-    { x: 1500, y: 642, width: 700, height: 96 },
-    { x: 1620, y: 540, width: 120, height: 24 },
-    { x: 1790, y: 482, width: 118, height: 24 }
+    { x: 1740, y: 642, width: 640, height: 96 },
+    { x: 1860, y: 540, width: 120, height: 24 },
+    { x: 2030, y: 482, width: 118, height: 24 }
   ],
   materials: [
     { material: 'blue', shape: 'slope', x: 532, y: 642, width: 540, height: 245, direction: 'downRight' },
-    { material: 'pink', shape: 'spikes', x: 1120, y: 650, width: 305, height: 84, teeth: 4 },
-    { material: 'green', shape: 'block', x: 1840, y: 420, width: 150, height: 28 }
+    { material: 'green', shape: 'block', x: 2080, y: 420, width: 150, height: 28 }
   ],
   notes: [
-    { x: 96, y: 120, text: 'Волна может перевозить друзей на голове. Мята: K - лоза' },
-    { x: 560, y: 372, text: 'Чужие звёзды срываются вниз по треугольной синей горке' },
-    { x: 1180, y: 360, text: 'Мята сохраняет скорость и цепляется лозой: K' },
-    { x: 1640, y: 598, text: 'После разгона скорость остаётся в воздухе' }
+    { x: 96, y: 120, text: 'Волна может перевозить друзей на голове. Мята: U - лоза' },
+    { x: 560, y: 372, text: 'Разгон с рампы. Дальше большая пропасть' },
+    { x: 1130, y: 360, text: 'U - зацепиться/отцепиться. I/M - длина лозы. J/L - раскачка' },
+    { x: 1760, y: 598, text: 'Мята жмет зеленую плиту, мост появляется для всех' }
   ],
   grappleAnchors: [
-    { id: 'vine-1', x: 1350, y: 248, radius: 470, pull: 52, duration: 980 },
-    { id: 'vine-2', x: 1668, y: 290, radius: 390, pull: 44, duration: 760 }
+    { id: 'vine-1', x: 1325, y: 230, radius: 620, minLength: 74, maxLength: 540 },
+    { id: 'vine-2', x: 1650, y: 250, radius: 560, minLength: 74, maxLength: 520 }
+  ],
+  plates: [
+    { id: 'green-bridge', x: 1776, y: 624, width: 86, height: 18, color: 0x8fc68d, requires: 'green', latch: true }
+  ],
+  bridges: [
+    {
+      id: 'gap-bridge',
+      x: 1088,
+      y: 606,
+      width: 628,
+      height: 24,
+      color: 0x111111,
+      appearsWhen: ['green-bridge'],
+      latch: true
+    }
   ],
   goals: [
-    { id: 'pink', x: 2030, y: 586, width: 48, height: 58 },
-    { id: 'blue', x: 2088, y: 586, width: 48, height: 58 },
-    { id: 'green', x: 2146, y: 586, width: 48, height: 58 }
+    { id: 'pink', x: 2210, y: 586, width: 48, height: 58 },
+    { id: 'blue', x: 2268, y: 586, width: 48, height: 58 },
+    { id: 'green', x: 2326, y: 586, width: 48, height: 58 }
   ]
 };

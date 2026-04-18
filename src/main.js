@@ -1,7 +1,4 @@
 import { BootScene } from './game/scenes/BootScene.js';
-import { LevelOneScene } from './game/scenes/LevelOneScene.js';
-import { LevelTwoScene } from './game/scenes/LevelTwoScene.js';
-import { LevelThreeScene } from './game/scenes/LevelThreeScene.js';
 import { MenuScene } from './game/scenes/MenuScene.js';
 
 const statusNode = document.querySelector('#boot-status');
@@ -43,7 +40,7 @@ window.addEventListener('load', () => {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [BootScene, MenuScene, LevelOneScene, LevelTwoScene, LevelThreeScene]
+    scene: [BootScene, MenuScene]
   };
 
   window.__zvezdiGame = new Phaser.Game(config);

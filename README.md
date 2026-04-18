@@ -27,6 +27,8 @@ http://127.0.0.1:4173/?level=2
 http://127.0.0.1:4173/?level=3
 ```
 
+Level ids also work, for example `?level=level-two`. New `.tmj` files in `assets/levels` are picked up automatically by the dev server; if the map has `id = level-four` and `alias = 4`, both `?level=level-four` and `?level=4` work.
+
 После изменений в коде лучше обновлять вкладку через `Ctrl+F5`, чтобы браузер не держал старые JS-модули в кэше.
 
 ## Dev tuning
@@ -69,7 +71,7 @@ W - прыжок
 ```text
 J / L - движение
 I - прыжок
-K - лоза / крюк
+U - лоза / крюк
 ```
 
 Общее:
@@ -100,3 +102,20 @@ npm run check
 ```
 
 Команда проверяет JavaScript-файлы на синтаксические ошибки.
+## Tiled level editing
+
+Level 2 can be edited in Tiled through:
+
+```text
+assets/levels/level-two.tmj
+```
+
+Open it in Tiled, edit object layers, save, then refresh `http://127.0.0.1:4173/?level=2` with `Ctrl+F5`.
+
+The dev server scans `assets/levels/*.tmj` and builds `assets/levels/manifest.json` automatically. The shared runtime is `src/game/scenes/GameplayScene.js`, so adding a Tiled level does not require creating a new scene class.
+
+Full layer/property guide:
+
+```text
+docs/TILED_LEVELS.md
+```

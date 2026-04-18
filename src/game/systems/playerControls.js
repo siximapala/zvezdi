@@ -5,6 +5,7 @@ export function createControlSet(scene, controls) {
     left: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[controls.left]),
     right: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[controls.right]),
     jump: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[controls.jump]),
+    down: controls.down ? scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[controls.down]) : null,
     ability: controls.ability ? scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[controls.ability]) : null
   };
 }
