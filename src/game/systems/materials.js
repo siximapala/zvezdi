@@ -1,4 +1,4 @@
-import { MATERIALS } from '../config/level-one.js';
+import { MATERIALS } from '../config/materials.js';
 
 export const COLLISION_CATEGORIES = {
   player: 0x0001,

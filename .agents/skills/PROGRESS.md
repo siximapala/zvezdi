@@ -400,3 +400,88 @@ Checked:
 - `npm run check` passes.
 - Dev server manifest still has no errors.
 - Local dev server returns HTTP 200 for `/?level=2`.
+
+2026-04-19 double-up vine toggle
+
+Done:
+- Removed Green's separate vine ability key.
+- Vine now toggles on double-tap of Green's jump/up key (`I` in the current controls).
+- Holding `I`/`M` while attached still changes vine length, and `J/L` still swings.
+- Reset the double-tap timer on respawn.
+- Updated menu, README, JS fallback notes, and Tiled note text from `U` to double `I`.
+
+Checked:
+- `npm run check` passes.
+- Local dev server returns HTTP 200 for `/?level=2`.
+
+2026-04-19 new level checklist doc
+
+Done:
+- Added `docs/NEW_LEVEL_TODO.md` with a practical Tiled checklist for creating new levels.
+- Linked the checklist from `README.md`.
+
+2026-04-19 Russian Tiled docs
+
+Done:
+- Rewrote `docs/TILED_LEVELS.md` in Russian while preserving the same layer/property contract.
+
+2026-04-19 assets-only level registry
+
+Done:
+- Removed built-in JS level configs from the runtime registry. `assets/levels/*.tmj` is now the only level source.
+- Added Tiled versions of the old level 1 and level 3 as `assets/levels/level-one.tmj` and `assets/levels/level-three.tmj`.
+- Fixed copied `assets/levels/level-four.tmj` metadata so it has unique `id = level-four`, `alias = 4`, and no accidental duplicate `level-two` manifest entry.
+- Kept shared gameplay logic in `GameplayScene`; BootScene still discovers `.tmj` maps through the generated manifest and registers scenes dynamically.
+- Updated README/Tiled docs to remove the old JS fallback/config wording.
+
+Checked:
+- `npm run check` passes.
+- Dev-server manifest lists `level-one`, `level-two`, `level-three`, and `level-four` with no duplicate ids or manifest errors.
+- Registry sorting resolves the order as `level-one -> level-two -> level-three -> level-four`.
+- Tiled parser converts every `.tmj` in `assets/levels` with spawns, goals, and gameplay objects present.
+
+2026-04-19 double-I vine input fix
+
+Done:
+- Fixed Green's double-`I` vine toggle by reading jump `JustDown` once per frame in `GameplayScene` and passing that frame input to both movement and grapple systems.
+- This prevents the jump movement code from consuming Phaser's one-shot `JustDown` flag before the vine code can see the second tap.
+
+Checked:
+- `npm run check` passes.
+
+2026-04-19 vine toggle on O
+
+Done:
+- Moved Green's vine toggle from double-`I` to the separate English `O` ability key.
+- Kept `I/M` for vine length while attached and `J/L` for swing.
+- Removed the double-tap timer state from gameplay runtime.
+- Updated menu, README, Tiled docs, new-level checklist, and the level 2 Tiled note.
+
+Checked:
+- `npm run check` passes.
+- All `.tmj` files in `assets/levels` parse as JSON.
+
+2026-04-19 Tiled mechanic layer recovery
+
+Done:
+- Made the Tiled importer recover common copied mechanics by object name even if they are pasted onto the wrong object layer.
+- `pink-plate`, `blue-plate`, and `green-plate` are now parsed as colored plates by name and removed from neutral geometry when accidentally left on `Neutral`.
+- `final-door` is now parsed as a door by name and defaults to opening from `pink-plate,blue-plate,green-plate` when `opensWhen` is missing.
+- Kept the heuristic narrow so neutral helper platforms like `plate-step` are not misclassified as mechanics.
+- Set the copied `level-five.tmj` plates and final door to `latch = false`, so the door requires all three plates to be pressed simultaneously.
+- Updated Tiled docs and the new-level checklist with the recovery behavior and the recommended proper layers.
+
+Checked:
+- `npm run check` passes.
+- `level-three.tmj` still parses with 7 neutral blocks and 3 color plates.
+- `level-five.tmj` now parses the misplaced copied objects as 3 plates and 1 final door, all non-latching.
+
+2026-04-19 level five final door latch
+
+Done:
+- Changed only the copied `final-door` in `level-five.tmj` to `latch = true`.
+- Kept `pink-plate`, `blue-plate`, and `green-plate` as `latch = false`, so all three players must stand on them at the same time once, then the door stays open.
+
+Checked:
+- `npm run check` passes.
+- Tiled parser reports level five plates as non-latching and `final-door` as latching.

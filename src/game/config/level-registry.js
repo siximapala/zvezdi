@@ -1,14 +1,4 @@
-import { LEVEL_ONE } from './level-one.js';
-import { LEVEL_THREE } from './level-three.js';
-import { LEVEL_TWO } from './level-two.js';
-
-const BASE_LEVEL_REGISTRY = [
-  { alias: '1', sceneKey: LEVEL_ONE.id, level: LEVEL_ONE },
-  { alias: '2', sceneKey: LEVEL_TWO.id, level: LEVEL_TWO },
-  { alias: '3', sceneKey: LEVEL_THREE.id, level: LEVEL_THREE }
-];
-
-let activeLevelRegistry = [...BASE_LEVEL_REGISTRY];
+let activeLevelRegistry = [];
 
 export function levelEntries() {
   return activeLevelRegistry;
@@ -20,7 +10,7 @@ export function firstLevelEntry() {
 
 export function registerDiscoveredLevels(manifest) {
   const discovered = Array.isArray(manifest?.levels) ? manifest.levels : [];
-  const merged = new Map(BASE_LEVEL_REGISTRY.map((entry) => [entry.sceneKey, entry]));
+  const merged = new Map();
 
   for (const item of discovered) {
     const entry = entryFromManifestItem(item);
