@@ -14,8 +14,19 @@ export class BootScene extends PhaserScene {
 
   preload() {
     for (const character of CHARACTERS) {
-      this.load.svg(character.textureKey, character.spritePath, { width: 48, height: 48 });
+      this.load.spritesheet(character.textureKey, `assets/sprites/${character.textureKey}.png`, {
+        frameWidth: 32,
+        frameHeight: 32
+      });
+      this.load.spritesheet(`${character.id}-death`, `assets/sprites/${character.id}-death.png`, {
+        frameWidth: 32,
+        frameHeight: 32
+      });
     }
+    this.load.spritesheet('green-leaves', 'assets/sprites/green-leavesh.png', {
+      frameWidth: 32,
+      frameHeight: 32
+    });
 
     this.load.json(LEVEL_MANIFEST_KEY, LEVEL_MANIFEST_PATH);
   }

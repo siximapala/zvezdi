@@ -2,7 +2,7 @@ export const CHARACTERS = [
   {
     id: 'pink',
     name: 'Искра',
-    textureKey: 'star-pink',
+    textureKey: 'pink-run',
     spritePath: 'assets/sprites/star-pink.svg',
     color: 0xd94f8a,
     lightColor: 0xff79ae,
@@ -24,7 +24,7 @@ export const CHARACTERS = [
   {
     id: 'blue',
     name: 'Волна',
-    textureKey: 'star-blue',
+    textureKey: 'blue-run',
     spritePath: 'assets/sprites/star-blue.svg',
     color: 0x5fa1c9,
     lightColor: 0x89d0ff,
@@ -46,7 +46,7 @@ export const CHARACTERS = [
   {
     id: 'green',
     name: 'Мята',
-    textureKey: 'star-green',
+    textureKey: 'green-run',
     spritePath: 'assets/sprites/star-green.svg',
     color: 0x8fc68d,
     lightColor: 0xc2f0b8,

@@ -3,6 +3,8 @@ import { CHARACTERS } from '../config/characters.js';
 export function registerCharacterAnimations(scene) {
   for (const character of CHARACTERS) {
     const idleKey = `${character.id}:idle`;
+    const runKey = `${character.id}:run`;
+    const deathKey = `${character.id}:death`;
 
     if (scene.anims.exists(idleKey)) {
       continue;
@@ -10,8 +12,31 @@ export function registerCharacterAnimations(scene) {
 
     scene.anims.create({
       key: idleKey,
-      frames: [{ key: character.textureKey }],
+      frames: [{ key: character.textureKey, frame: 0 }],
       frameRate: 1,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: runKey,
+      frames: scene.anims.generateFrameNumbers(character.textureKey, { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: deathKey,
+      frames: scene.anims.generateFrameNumbers(`${character.id}-death`, { start: 0, end: 3 }),
+      frameRate: 12,
+      repeat: 0
+    });
+  }
+
+  if (!scene.anims.exists('green:leaves')) {
+    scene.anims.create({
+      key: 'green:leaves',
+      frames: scene.anims.generateFrameNumbers('green-leaves', { start: 0, end: 5 }),
+      frameRate: 12,
       repeat: -1
     });
   }
@@ -28,13 +53,13 @@ export function playCharacterAnimation(sprite, character, state) {
 /*
   Future spritesheet hook:
 
-  1. Put exported spritesheets in assets/sprites.
+  1. Put exported .png spritesheets in assets/sprites.
   2. Load them in BootScene.preload with this.load.spritesheet(...).
-  3. Replace the single-frame animation above with generated frame ranges:
+  3. Build the animation from frame ranges:
 
      scene.anims.create({
        key: 'pink:run',
-       frames: scene.anims.generateFrameNumbers('pink-run-sheet', { start: 0, end: 7 }),
+       frames: scene.anims.generateFrameNumbers('pink-run', { start: 0, end: 7 }),
        frameRate: 10,
        repeat: -1
      });

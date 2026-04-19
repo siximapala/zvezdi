@@ -63,6 +63,9 @@ const PLAYER_BODY = {
   height: 76
 };
 
+const DEATH_ANIMATION_DURATION_MS = 340;
+const GREEN_LEAVES_OFFSET = 26;
+
 const GROUND_CONTACT = {
   topGraceAbove: 30,
   topGraceBelow: 18,
@@ -150,9 +153,16 @@ export class GameplayScene extends PhaserScene {
     }
 
     for (const player of this.players) {
+      if (player.respawning) {
+        this.updateLight(player);
+        this.updateGrappleLeaves(player);
+        continue;
+      }
+
       updatePlayerMovement(player, time);
       this.updateLight(player);
-      playCharacterAnimation(player.sprite, player.character, 'idle');
+      this.updateGrappleLeaves(player);
+      playCharacterAnimation(player.sprite, player.character, player.isMoving ? 'run' : 'idle');
 
       if (player.sprite.y > this.level.world.height + 90) {
         this.respawnPlayer(player, 'Р С—Р В°Р Т‘Р ВµР Р…Р С‘Р Вµ');
@@ -205,9 +215,9 @@ export class GameplayScene extends PhaserScene {
     for (const character of CHARACTERS) {
       const collisionMask = collisionMaskForCharacter(character);
       const spawn = this.spawnFor(character);
-      const sprite = this.matter.add.sprite(spawn.x, spawn.y, character.textureKey);
+      const sprite = this.matter.add.sprite(spawn.x, spawn.y, character.textureKey, 0);
 
-      sprite.setScale(1.32);
+      sprite.setScale(2.97);
       sprite.setRectangle(PLAYER_BODY.width, PLAYER_BODY.height);
       sprite.setFixedRotation();
       sprite.setFriction(0, 0.018, 0);
@@ -221,11 +231,16 @@ export class GameplayScene extends PhaserScene {
       const aura = this.add.circle(sprite.x, sprite.y, 74, character.lightColor, 0.18);
       aura.setBlendMode(window.Phaser.BlendModes.ADD);
       aura.setDepth(1);
+      const grappleLeaves =
+        character.id === 'green'
+          ? this.add.sprite(sprite.x, sprite.y, 'green-leaves', 0).setDepth(4).setScale(2.2).setVisible(false)
+          : null;
 
       const player = {
         character,
         sprite,
         aura,
+        grappleLeaves,
         keys: createControlSet(this, character.controls),
         collisionMask,
         lastSurface: 'neutral',
@@ -594,6 +609,37 @@ export class GameplayScene extends PhaserScene {
     if (line) {
       line.clear();
     }
+
+    this.updateGrappleLeaves(player);
+  }
+
+  updateGrappleLeaves(player) {
+    const leaves = player.grappleLeaves;
+    const anchor = player.grapple?.anchor;
+
+    if (!leaves) {
+      return;
+    }
+
+    if (player.respawning || !anchor) {
+      leaves.setVisible(false);
+      leaves.anims.stop();
+      leaves.setFrame(0);
+      return;
+    }
+
+    const angle = Math.atan2(anchor.y - player.sprite.y, anchor.x - player.sprite.x);
+
+    leaves.setVisible(true);
+    leaves.setPosition(
+      player.sprite.x + Math.cos(angle) * GREEN_LEAVES_OFFSET,
+      player.sprite.y + Math.sin(angle) * GREEN_LEAVES_OFFSET
+    );
+    leaves.setRotation(angle);
+
+    if (leaves.anims.currentAnim?.key !== 'green:leaves' || !leaves.anims.isPlaying) {
+      leaves.anims.play('green:leaves', true);
+    }
   }
 
   createMechanics() {
@@ -797,15 +843,17 @@ export class GameplayScene extends PhaserScene {
     this.deaths += 1;
     this.currentMessage = `${player.character.name}: ${reason}`;
     setHudMessage(this.currentMessage);
-    player.sprite.setTintFill(0xffffff);
+    player.sprite.setTexture(`${player.character.id}-death`, 0);
+    player.sprite.anims.play(`${player.character.id}:death`, true);
     player.sprite.body.collisionFilter.mask = 0;
     player.sprite.setIgnoreGravity(true);
     player.sprite.setVelocity(0, 0);
 
-    this.time.delayedCall(180, () => {
+    this.time.delayedCall(DEATH_ANIMATION_DURATION_MS, () => {
       const spawn = this.spawnFor(player.character);
 
       player.sprite.clearTint();
+      player.sprite.setTexture(player.character.textureKey, 0);
       player.sprite.setPosition(spawn.x, spawn.y);
       player.sprite.setVelocity(0, 0);
       player.sprite.setIgnoreGravity(false);

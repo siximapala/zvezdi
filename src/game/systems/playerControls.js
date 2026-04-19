@@ -49,6 +49,8 @@ export function updatePlayerMovement(player, now) {
     sprite.setFlipX(inputAxis < 0);
   }
 
+  player.isMoving = Math.abs(inputAxis) > 0;
+
   setVelocity(sprite, nextVelocityX, velocity.y);
   sprite.setFrictionAir(slippery || preserveMomentum ? 0.006 : 0.018);
 

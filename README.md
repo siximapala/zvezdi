@@ -102,6 +102,35 @@ npm run check
 ```
 
 Команда проверяет JavaScript-файлы на синтаксические ошибки.
+
+## Aseprite animations
+
+For this project, export character animation from Aseprite as:
+
+```text
+Sprite sheet: Horizontal Strip
+Data format: None
+Trim sprite: Off
+Trim cells: Off
+Merge duplicates: Off
+Border padding: 0
+Spacing: 0
+```
+
+Save the PNG into `assets/sprites/`, for example:
+
+```text
+assets/sprites/blue-run.png
+```
+
+Then wire them like this:
+
+1. Keep all frames on the same canvas size, for example `32x32`.
+2. In `BootScene.preload`, load the PNG with `this.load.spritesheet(...)`.
+3. In `GameplayScene`, create the Matter sprite from that texture key directly.
+4. In `animations.js`, build the animation with `generateFrameNumbers(...)`.
+
+Why: fixed-size strips are the simplest match for Phaser's spritesheet loader. Packed + trimmed atlas exports can shift frames and break rendering if the runtime expects a regular grid.
 ## Tiled level editing
 
 Level 2 can be edited in Tiled through:
