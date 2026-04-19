@@ -439,3 +439,24 @@ Checked:
 - Dev-server manifest lists `level-one`, `level-two`, `level-three`, and `level-four` with no duplicate ids or manifest errors.
 - Registry sorting resolves the order as `level-one -> level-two -> level-three -> level-four`.
 - Tiled parser converts every `.tmj` in `assets/levels` with spawns, goals, and gameplay objects present.
+
+2026-04-19 double-I vine input fix
+
+Done:
+- Fixed Green's double-`I` vine toggle by reading jump `JustDown` once per frame in `GameplayScene` and passing that frame input to both movement and grapple systems.
+- This prevents the jump movement code from consuming Phaser's one-shot `JustDown` flag before the vine code can see the second tap.
+
+Checked:
+- `npm run check` passes.
+
+2026-04-19 vine toggle on O
+
+Done:
+- Moved Green's vine toggle from double-`I` to the separate English `O` ability key.
+- Kept `I/M` for vine length while attached and `J/L` for swing.
+- Removed the double-tap timer state from gameplay runtime.
+- Updated menu, README, Tiled docs, new-level checklist, and the level 2 Tiled note.
+
+Checked:
+- `npm run check` passes.
+- All `.tmj` files in `assets/levels` parse as JSON.

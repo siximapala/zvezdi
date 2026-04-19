@@ -45,7 +45,6 @@ const GRAPPLE_TUNING = {
   maxVelocityX: 23,
   maxVelocityY: 24
 };
-const GRAPPLE_TOGGLE_TAP_MS = 260;
 
 const ONE_WAY_PLATFORM = {
   sideInset: 10,
@@ -151,7 +150,12 @@ export class GameplayScene extends PhaserScene {
     }
 
     for (const player of this.players) {
-      updatePlayerMovement(player, time);
+      player.frameInput = {
+        jumpPressed: Phaser.Input.Keyboard.JustDown(player.keys.jump),
+        abilityPressed: player.keys.ability ? Phaser.Input.Keyboard.JustDown(player.keys.ability) : false
+      };
+
+      updatePlayerMovement(player, time, player.frameInput);
       this.updateLight(player);
       playCharacterAnimation(player.sprite, player.character, 'idle');
 
@@ -238,7 +242,6 @@ export class GameplayScene extends PhaserScene {
         slopeMomentumUntil: 0,
         slipperyJumpCount: 0,
         slopeSlideDirection: -1,
-        lastGrappleJumpTapAt: -1000,
         respawning: false
       };
 
@@ -458,13 +461,8 @@ export class GameplayScene extends PhaserScene {
       return;
     }
 
-    if (Phaser.Input.Keyboard.JustDown(green.keys.jump)) {
-      const isDoubleTap = time - green.lastGrappleJumpTapAt <= GRAPPLE_TOGGLE_TAP_MS;
-      green.lastGrappleJumpTapAt = isDoubleTap ? -1000 : time;
-
-      if (isDoubleTap) {
-        this.toggleGrapple(green, time);
-      }
+    if (green.frameInput?.abilityPressed) {
+      this.toggleGrapple(green, time);
     }
 
     if (green.grapple) {
@@ -546,7 +544,7 @@ export class GameplayScene extends PhaserScene {
       length: Phaser.Math.Clamp(distance, anchor.minLength ?? 74, anchor.maxLength ?? anchor.radius),
       attachedAt: time
     };
-    this.currentMessage = 'Мята держится лозой. I/M - длина, J/L - раскачка, двойное I - отпустить';
+    this.currentMessage = 'Мята держится лозой. I/M - длина, J/L - раскачка, O - отпустить';
     setHudMessage(this.currentMessage);
   }
 
@@ -830,7 +828,6 @@ export class GameplayScene extends PhaserScene {
       player.surfaceTouchedAt = 0;
       player.oneWayPlatformBody = null;
       player.oneWayPlatformAt = -1000;
-      player.lastGrappleJumpTapAt = -1000;
       player.respawning = false;
     });
   }

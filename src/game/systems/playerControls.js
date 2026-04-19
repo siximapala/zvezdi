@@ -10,8 +10,7 @@ export function createControlSet(scene, controls) {
   };
 }
 
-export function updatePlayerMovement(player, now) {
-  const Phaser = window.Phaser;
+export function updatePlayerMovement(player, now, input = {}) {
   const { sprite, keys, character } = player;
   const tuning = sprite.scene.gameplayTuning;
   const velocity = sprite.body.velocity;
@@ -24,7 +23,7 @@ export function updatePlayerMovement(player, now) {
   const left = keys.left.isDown;
   const right = keys.right.isDown;
   const inputAxis = (right ? 1 : 0) - (left ? 1 : 0);
-  const jumpPressed = Phaser.Input.Keyboard.JustDown(keys.jump);
+  const jumpPressed = Boolean(input.jumpPressed);
   const maxRunSpeed = (character.speed / 58) * tuning.speedScale;
   const targetSpeed = inputAxis * maxRunSpeed;
   const acceleration = onGround ? (slippery ? 0.035 : 0.24) * tuning.accelerationScale : 0.075 * tuning.airControlScale;
