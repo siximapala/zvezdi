@@ -78,6 +78,8 @@ latch = true | false
 color = #ff8fc68d
 ```
 
+Для быстрых копипаст из Tiled игра также понимает типовые имена `pink-plate`, `blue-plate`, `green-plate`: если такой объект случайно остался на `Neutral`, импортёр всё равно сделает из него цветную plate и не создаст чёрную платформу. Но для порядка в файле лучше переносить такие объекты на слой `Plates`.
+
 `Switches`
 : То же по форме, что `Plates`, но объекты нужно класть на слой `Switches`.
 
@@ -90,6 +92,8 @@ opensWhen = pink-plate,blue-plate,green-plate
 latch = true | false
 color = #ff111111
 ```
+
+`final-door` может работать и без `opensWhen`: по умолчанию она ждёт `pink-plate,blue-plate,green-plate`. Явное свойство `opensWhen` всё равно лучше, если дверь должна открываться от других кнопок.
 
 `Bridges`
 : Rectangle objects, которые появляются после активации кнопок/плит. Полезные свойства:

@@ -71,7 +71,9 @@ export function levelFromTiledMap(map, manifestLevel = {}) {
 }
 
 function parseNeutral(map) {
-  return getObjects(map, 'neutral').map(rectConfig);
+  return getObjects(map, 'neutral')
+    .filter((object) => !isImplicitActivator(object, 'plates') && !isImplicitActivator(object, 'switches') && !isImplicitDoor(object))
+    .map(rectConfig);
 }
 
 function parseMaterials(map) {
@@ -148,9 +150,14 @@ function parseGrappleAnchors(map) {
 }
 
 function parseActivators(map, layerKey) {
-  return getObjects(map, layerKey).map((object, index) => {
+  const objects = uniqueObjects([
+    ...getObjects(map, layerKey),
+    ...getAllObjects(map).filter((object) => isImplicitActivator(object, layerKey))
+  ]);
+
+  return objects.map((object, index) => {
     const properties = readProperties(object);
-    const requires = stringValue(properties.requires, 'any');
+    const requires = stringValue(properties.requires, characterFromObject(object), 'any');
 
     return {
       ...rectConfig(object),
@@ -164,14 +171,15 @@ function parseActivators(map, layerKey) {
 }
 
 function parseDoors(map) {
-  return getObjects(map, 'doors').map((object, index) => {
+  return uniqueObjects([...getObjects(map, 'doors'), ...getAllObjects(map).filter(isImplicitDoor)]).map((object, index) => {
     const properties = readProperties(object);
+    const inferredOpensWhen = isFinalDoor(object) ? ['pink-plate', 'blue-plate', 'green-plate'] : [];
 
     return {
       ...rectConfig(object),
       id: stringValue(properties.id, object.name, `door-${index + 1}`),
       color: colorValue(properties.color, DEFAULT_COLORS.neutral),
-      opensWhen: listValue(properties.opensWhen),
+      opensWhen: listValue(properties.opensWhen, inferredOpensWhen),
       latch: booleanValue(properties.latch, false)
     };
   });
@@ -197,6 +205,28 @@ function getObjects(map, aliasKey) {
   return (map.layers ?? [])
     .filter((layer) => layer.type === 'objectgroup' && layer.visible !== false && aliases.includes(normalize(layer.name)))
     .flatMap((layer) => layer.objects ?? []);
+}
+
+function getAllObjects(map) {
+  return (map.layers ?? [])
+    .filter((layer) => layer.type === 'objectgroup' && layer.visible !== false)
+    .flatMap((layer) => layer.objects ?? []);
+}
+
+function uniqueObjects(objects) {
+  const seen = new Set();
+  const result = [];
+
+  for (const object of objects) {
+    const key = object.id ?? `${object.name}:${object.x}:${object.y}:${object.width}:${object.height}`;
+
+    if (!seen.has(key)) {
+      seen.add(key);
+      result.push(object);
+    }
+  }
+
+  return result;
 }
 
 function readProperties(source) {
@@ -270,6 +300,45 @@ function normalize(value) {
   return String(value ?? '').trim().toLowerCase().replace(/\s+/g, '');
 }
 
+function tokensFor(value) {
+  return String(value ?? '')
+    .trim()
+    .toLowerCase()
+    .split(/[:/_\-\s]+/)
+    .filter(Boolean);
+}
+
+function objectTokens(object) {
+  return [object.name, object.type, object.class].flatMap(tokensFor);
+}
+
+function objectHasToken(object, token) {
+  return objectTokens(object).includes(token);
+}
+
+function isImplicitActivator(object, layerKey) {
+  if (layerKey === 'plates') {
+    const properties = readProperties(object);
+    const looksLikePlate = objectHasToken(object, 'plate') || objectHasToken(object, 'plates');
+
+    return looksLikePlate && Boolean(characterFromObject(object) || properties.requires !== undefined);
+  }
+
+  if (layerKey === 'switches') {
+    return objectHasToken(object, 'switch') || objectHasToken(object, 'button');
+  }
+
+  return false;
+}
+
+function isImplicitDoor(object) {
+  return objectHasToken(object, 'door') || objectHasToken(object, 'doors');
+}
+
+function isFinalDoor(object) {
+  return isImplicitDoor(object) && objectHasToken(object, 'final');
+}
+
 function stringValue(...values) {
   return values.find((value) => value !== undefined && value !== null && value !== '') ?? '';
 }
@@ -311,15 +380,23 @@ function booleanValue(value, fallback) {
   return fallback;
 }
 
-function listValue(value) {
-  if (Array.isArray(value)) {
-    return value;
+function listValue(...values) {
+  for (const value of values) {
+    if (Array.isArray(value) && value.length) {
+      return value;
+    }
+
+    const list = String(value ?? '')
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    if (list.length) {
+      return list;
+    }
   }
 
-  return String(value ?? '')
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean);
+  return [];
 }
 
 function colorValue(value, fallback) {
@@ -369,6 +446,10 @@ function characterValue(...values) {
   }
 
   return '';
+}
+
+function characterFromObject(object) {
+  return objectTokens(object).find((token) => CHARACTER_IDS.has(token)) ?? '';
 }
 
 function defaultColorFor(requires, fallbackKey) {

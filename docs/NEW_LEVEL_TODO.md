@@ -146,6 +146,8 @@ latch = true
 color = #ff8fc68d
 ```
 
+Если случайно вставил `pink-plate`, `blue-plate` или `green-plate` на слой `Neutral`, игра всё равно распознает их как plates по имени. Но в Tiled лучше перенести их на слой `Plates`, чтобы файл оставался читаемым.
+
 16. Для мостов используй слой:
 
 ```text
@@ -175,6 +177,8 @@ opensWhen = pink-plate,blue-plate,green-plate
 latch = true
 color = #ff111111
 ```
+
+Если дверь называется `final-door`, игра по умолчанию считает, что она открывается тремя plates: `pink-plate`, `blue-plate`, `green-plate`.
 
 18. Для текста-подсказок используй слой:
 
