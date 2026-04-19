@@ -1,5 +1,5 @@
 ﻿import { CHARACTERS, CHARACTER_BY_ID } from '../config/characters.js';
-import { MATERIALS } from '../config/level-one.js';
+import { MATERIALS } from '../config/materials.js';
 import { playCharacterAnimation } from '../systems/animations.js';
 import { hideHud, setHudMessage, updateHud } from '../systems/hud.js';
 import {
@@ -150,7 +150,12 @@ export class GameplayScene extends PhaserScene {
     }
 
     for (const player of this.players) {
-      updatePlayerMovement(player, time);
+      player.frameInput = {
+        jumpPressed: Phaser.Input.Keyboard.JustDown(player.keys.jump),
+        abilityPressed: player.keys.ability ? Phaser.Input.Keyboard.JustDown(player.keys.ability) : false
+      };
+
+      updatePlayerMovement(player, time, player.frameInput);
       this.updateLight(player);
       playCharacterAnimation(player.sprite, player.character, 'idle');
 
@@ -456,25 +461,8 @@ export class GameplayScene extends PhaserScene {
       return;
     }
 
-    if (green.keys.ability && Phaser.Input.Keyboard.JustDown(green.keys.ability)) {
-      if (green.grapple) {
-        green.grapple = null;
-        this.clearGrappleLine(green);
-        return;
-      }
-
-      const anchor = this.findGrappleAnchor(green);
-
-      if (anchor) {
-        const distance = Math.hypot(anchor.x - green.sprite.x, anchor.y - green.sprite.y);
-        green.grapple = {
-          anchor,
-          length: Phaser.Math.Clamp(distance, anchor.minLength ?? 74, anchor.maxLength ?? anchor.radius),
-          attachedAt: time
-        };
-        this.currentMessage = 'Мята держится лозой. I/M - длина, J/L - раскачка, U - отпустить';
-        setHudMessage(this.currentMessage);
-      }
+    if (green.frameInput?.abilityPressed) {
+      this.toggleGrapple(green, time);
     }
 
     if (green.grapple) {
@@ -534,6 +522,32 @@ export class GameplayScene extends PhaserScene {
       this.clearGrappleLine(green);
     }
   }
+
+  toggleGrapple(player, time) {
+    const Phaser = window.Phaser;
+
+    if (player.grapple) {
+      player.grapple = null;
+      this.clearGrappleLine(player);
+      return;
+    }
+
+    const anchor = this.findGrappleAnchor(player);
+
+    if (!anchor) {
+      return;
+    }
+
+    const distance = Math.hypot(anchor.x - player.sprite.x, anchor.y - player.sprite.y);
+    player.grapple = {
+      anchor,
+      length: Phaser.Math.Clamp(distance, anchor.minLength ?? 74, anchor.maxLength ?? anchor.radius),
+      attachedAt: time
+    };
+    this.currentMessage = 'Мята держится лозой. I/M - длина, J/L - раскачка, O - отпустить';
+    setHudMessage(this.currentMessage);
+  }
+
   findGrappleAnchor(player) {
     let best = null;
     let bestDistance = Infinity;

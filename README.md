@@ -27,7 +27,7 @@ http://127.0.0.1:4173/?level=2
 http://127.0.0.1:4173/?level=3
 ```
 
-Level ids also work, for example `?level=level-two`. New `.tmj` files in `assets/levels` are picked up automatically by the dev server; if the map has `id = level-four` and `alias = 4`, both `?level=level-four` and `?level=4` work.
+Level ids also work, for example `?level=level-two`. All playable levels come from `.tmj` files in `assets/levels`; if the map has `id = level-four` and `alias = 4`, both `?level=level-four` and `?level=4` work.
 
 После изменений в коде лучше обновлять вкладку через `Ctrl+F5`, чтобы браузер не держал старые JS-модули в кэше.
 
@@ -71,7 +71,8 @@ W - прыжок
 ```text
 J / L - движение
 I - прыжок
-U - лоза / крюк
+O - лоза / крюк
+M - удлинить лозу
 ```
 
 Общее:
@@ -87,9 +88,10 @@ Enter - перейти дальше после прохождения уровн
 ```text
 index.html                  точка входа
 src/main.js                 конфиг Phaser
-src/game/scenes/            сцены меню и уровней
-src/game/config/            конфиги персонажей и уровней
+src/game/scenes/            меню, загрузка и общий gameplay runtime
+src/game/config/            конфиги персонажей и общие справочники
 src/game/systems/           физика материалов, управление, HUD, tuning
+assets/levels/              Tiled-уровни, источник правды для порядка уровней
 assets/sprites/             временные SVG-спрайты
 scripts/dev-server.mjs      локальный dev-сервер
 scripts/check-syntax.mjs    быстрая проверка JS-синтаксиса
@@ -104,18 +106,24 @@ npm run check
 Команда проверяет JavaScript-файлы на синтаксические ошибки.
 ## Tiled level editing
 
-Level 2 can be edited in Tiled through:
+Levels are edited in Tiled through:
 
 ```text
-assets/levels/level-two.tmj
+assets/levels/*.tmj
 ```
 
-Open it in Tiled, edit object layers, save, then refresh `http://127.0.0.1:4173/?level=2` with `Ctrl+F5`.
+Open a `.tmj` file in Tiled, edit object layers, save, then refresh the matching URL, for example `http://127.0.0.1:4173/?level=2`, with `Ctrl+F5`.
 
-The dev server scans `assets/levels/*.tmj` and builds `assets/levels/manifest.json` automatically. The shared runtime is `src/game/scenes/GameplayScene.js`, so adding a Tiled level does not require creating a new scene class.
+The dev server scans `assets/levels/*.tmj` and builds `assets/levels/manifest.json` automatically. The shared runtime is `src/game/scenes/GameplayScene.js`, so adding a Tiled level does not require creating a new scene class or JS level config.
 
 Full layer/property guide:
 
 ```text
 docs/TILED_LEVELS.md
+```
+
+New level checklist:
+
+```text
+docs/NEW_LEVEL_TODO.md
 ```

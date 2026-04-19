@@ -33,26 +33,26 @@ export function resolveLevelConfig(scene, sourceLevel) {
   const tiledMap = scene.cache.json.get(sourceLevel.tiledKey);
 
   if (!tiledMap) {
-    console.warn(`Tiled map "${sourceLevel.tiledKey}" is not loaded, using JS fallback.`);
+    console.warn(`Tiled map "${sourceLevel.tiledKey}" is not loaded; using manifest metadata only.`);
     return sourceLevel;
   }
 
   return levelFromTiledMap(tiledMap, sourceLevel);
 }
 
-export function levelFromTiledMap(map, fallback = {}) {
+export function levelFromTiledMap(map, manifestLevel = {}) {
   const mapProperties = readProperties(map);
   const mapBounds = mapWorldBounds(map);
-  const worldWidth = Math.max(numberValue(mapProperties.worldWidth, fallback.world?.width), mapBounds.width);
-  const worldHeight = Math.max(numberValue(mapProperties.worldHeight, fallback.world?.height), mapBounds.height);
+  const worldWidth = Math.max(numberValue(mapProperties.worldWidth, manifestLevel.world?.width), mapBounds.width);
+  const worldHeight = Math.max(numberValue(mapProperties.worldHeight, manifestLevel.world?.height), mapBounds.height);
 
   return {
-    ...fallback,
-    id: stringValue(mapProperties.id, fallback.id),
-    title: stringValue(mapProperties.title, fallback.title),
-    startMessage: stringValue(mapProperties.startMessage, fallback.startMessage),
-    completeMessage: stringValue(mapProperties.completeMessage, fallback.completeMessage),
-    nextLevel: nullableString(mapProperties.nextLevel, fallback.nextLevel),
+    ...manifestLevel,
+    id: stringValue(mapProperties.id, manifestLevel.id),
+    title: stringValue(mapProperties.title, manifestLevel.title),
+    startMessage: stringValue(mapProperties.startMessage, manifestLevel.startMessage),
+    completeMessage: stringValue(mapProperties.completeMessage, manifestLevel.completeMessage),
+    nextLevel: nullableString(mapProperties.nextLevel, manifestLevel.nextLevel),
     world: {
       width: worldWidth,
       height: worldHeight

@@ -36,7 +36,7 @@ export class MenuScene extends PhaserScene {
     const lines = [
       'Искра: A / D / W',
       'Волна: ← / → / ↑',
-      'Мята: J / L / I / M / U',
+      'Мята: J / L / I / M / O',
       'R: заново, Esc: меню'
     ];
 
@@ -72,7 +72,11 @@ export class MenuScene extends PhaserScene {
   }
 
   startFirstLevel() {
-    this.scene.start(firstLevelEntry().sceneKey);
+    const firstLevel = firstLevelEntry();
+
+    if (firstLevel) {
+      this.scene.start(firstLevel.sceneKey);
+    }
   }
 
   drawLogo() {

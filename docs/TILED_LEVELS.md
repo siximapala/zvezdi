@@ -1,60 +1,64 @@
-# Tiled Level Workflow
+# Уровни в Tiled
 
-The game now supports object-only Tiled maps (`.tmj`). Tiled is used as a level editor, while Phaser/Matter still creates the real gameplay geometry.
+Игра поддерживает object-only карты Tiled (`.tmj`). Tiled используется как редактор уровней, а Phaser/Matter уже в игре создаёт настоящую игровую геометрию, коллизии и механику.
 
-## Quick loop
+## Быстрый цикл
 
-1. Install Tiled: https://www.mapeditor.org/
-2. Open an existing `.tmj` in `assets/levels`, or save a new Tiled map there.
-3. Move, resize, duplicate, or add objects in the object layers.
-4. Save the file as JSON map (`.tmj`).
-5. Run the game and open `/?level=2`, `/?level=level-two`, or the id of your new map.
-6. Use `Ctrl+F5` in the browser after saving the map.
+1. Установи Tiled: https://www.mapeditor.org/
+2. Открой существующий `.tmj` в `assets/levels` или сохрани туда новую карту Tiled.
+3. Двигай, растягивай, дублируй или добавляй объекты на object layers.
+4. Сохрани файл как JSON map (`.tmj`).
+5. Запусти игру и открой `/?level=2`, `/?level=level-two` или id своего нового уровня.
+6. После сохранения карты обновляй браузер через `Ctrl+F5`.
 
-## Important rule
+## Главное правило
 
-Keep objects in the expected layers. The importer reads layer names, not visual colors.
+Объекты должны лежать на ожидаемых слоях. Импортёр читает названия слоёв, а не визуальные цвета в Tiled.
 
-## Layers
+## Слои
 
 `Spawns`
-: Point objects named `pink`, `blue`, `green`.
+: Point objects с именами `pink`, `blue`, `green`.
 
 `Neutral`
-: Rectangle objects. These become normal black platforms/walls.
+: Rectangle objects. Они становятся обычными чёрными платформами, полом и стенами.
 
-Thin neutral rectangles (`height <= 34`) are treated as one-way island platforms by default: players collide only when landing from above, not from the side or underside. Add `oneWay = false` to a thin neutral object if it must be a fully solid block.
+Тонкие neutral-прямоугольники (`height <= 34`) по умолчанию считаются one-way островками: игроки стоят на них при приземлении сверху, но не цепляются сбоку и снизу. Если тонкий объект должен быть полностью твёрдым блоком, добавь ему свойство:
+
+```text
+oneWay = false
+```
 
 `Materials`
-: Rectangle objects with custom properties:
+: Rectangle objects с пользовательскими свойствами:
 
 ```text
 material = pink | blue | green
 shape = block | slope | spikes | stairs
-direction = upRight | downRight   only for slope
-teeth = number                    only for spikes
+direction = upRight | downRight   только для slope
+teeth = number                    только для spikes
 ```
 
-`red` is accepted as an alias for `pink`, so `material = red` works for red/pink hazard spikes.
+`red` принимается как alias для `pink`, поэтому `material = red` работает для красных/розовых шипов.
 
-You can also put spike rectangles on a `Hazards` layer. The importer treats `Hazards` like `Materials`.
+Шипы можно класть и на слой `Hazards`. Импортёр обрабатывает `Hazards` так же, как `Materials`.
 
-Fast spike setup:
+Быстрая настройка шипов:
 
 ```text
-Layer: Materials or Hazards
+Layer: Materials или Hazards
 Object: rectangle
-Name or class: red-spikes
+Name или class: red-spikes
 Properties:
   material = red
   shape = spikes
   teeth = 5
 ```
 
-For a slope, draw a rectangle that represents the slope bounding box. The game turns it into the real triangular visual and an angled Matter body.
+Для рампы нарисуй прямоугольник, который задаёт bounding box склона. Игра превратит его в треугольный визуал и наклонное Matter-тело.
 
 `GrappleAnchors`
-: Point objects for Green's vine. Useful properties:
+: Point objects для лозы Мяты. Полезные свойства:
 
 ```text
 radius = 620
@@ -62,8 +66,10 @@ minLength = 74
 maxLength = 540
 ```
 
+Мята цепляется клавишей `O`, если anchor находится в радиусе и не закрыт стеной.
+
 `Plates`
-: Rectangle trigger objects. Useful properties:
+: Rectangle trigger objects. Полезные свойства:
 
 ```text
 id = green-bridge
@@ -73,10 +79,10 @@ color = #ff8fc68d
 ```
 
 `Switches`
-: Same shape as `Plates`, but use the `Switches` layer.
+: То же по форме, что `Plates`, но объекты нужно класть на слой `Switches`.
 
 `Doors`
-: Rectangle objects. Useful properties:
+: Rectangle objects. Полезные свойства:
 
 ```text
 id = final-door
@@ -86,7 +92,7 @@ color = #ff111111
 ```
 
 `Bridges`
-: Rectangle objects that appear after activators. Useful properties:
+: Rectangle objects, которые появляются после активации кнопок/плит. Полезные свойства:
 
 ```text
 id = gap-bridge
@@ -96,34 +102,69 @@ color = #ff111111
 ```
 
 `Goals`
-: Rectangle objects named `pink`, `blue`, `green`.
+: Rectangle objects с именами `pink`, `blue`, `green`.
 
 `Notes`
-: Objects with a `text` property. These are drawn as in-game hint text.
+: Objects со свойством `text`. Они рисуются в игре как подсказки.
 
-## Map properties
+## Свойства карты
 
-Set these on the map itself when needed:
+Эти свойства задаются на самой карте, не на объекте:
 
 ```text
 id = level-two
 alias = 2
+title = Level 2
 worldWidth = 2380
 worldHeight = 720
 nextLevel = level-three
 ```
 
-If a map property is missing, the JS level config remains the fallback for title, messages, and next level.
-`nextLevel` should usually be another level id, but aliases like `4` are also accepted.
+JS-конфигов уровней больше нет. Все уровни приходят из `.tmj`-файлов в `assets/levels`, а недостающие служебные поля получают только общие безопасные значения по умолчанию.
 
-World bounds are automatic: the game uses the largest value from `worldWidth`, the Tiled map size, and object extents. If you extend the map in Tiled, the playable world expands with it. Use `worldWidth` only when you want extra empty space beyond the visible grid.
+`nextLevel` обычно должен быть id другого уровня:
 
-The dev server automatically scans `assets/levels/*.tmj` and exposes them to the game through `assets/levels/manifest.json`. That means a new Tiled file does not need a new scene class.
+```text
+nextLevel = level-three
+```
 
-## Adding another Tiled level
+Но alias тоже принимается:
 
-1. Copy `assets/levels/level-two.tmj` to a new file, for example `assets/levels/level-four.tmj`.
-2. In Tiled, set map properties:
+```text
+nextLevel = 4
+```
+
+Если уровень последний:
+
+```text
+nextLevel = null
+```
+
+Размер мира считается автоматически: игра берёт максимум из `worldWidth`, размера Tiled-карты и дальних объектов. Если ты расширяешь карту в Tiled, playable world расширяется вместе с ней. `worldWidth` нужен только если хочешь оставить пустое пространство за пределами видимой сетки.
+
+Dev-server автоматически сканирует:
+
+```text
+assets/levels/*.tmj
+```
+
+и отдаёт их игре через:
+
+```text
+assets/levels/manifest.json
+```
+
+Поэтому для нового Tiled-файла не нужен отдельный scene class.
+
+## Добавить новый Tiled-уровень
+
+1. Скопируй `assets/levels/level-two.tmj` в новый файл, например:
+
+```text
+assets/levels/level-four.tmj
+```
+
+2. В Tiled задай свойства карты:
 
 ```text
 id = level-four
@@ -134,8 +175,20 @@ worldWidth = 1280
 worldHeight = 720
 ```
 
-3. Save the file.
-4. Refresh the browser with `Ctrl+F5`.
-5. Use `/?level=4` or `/?level=level-four`.
+3. Сохрани файл.
 
-Optional: add a JS config only if you want a hand-written fallback for a level that must work without the dev server manifest.
+4. Обнови браузер через `Ctrl+F5`.
+
+5. Открой уровень:
+
+```text
+/?level=4
+```
+
+или:
+
+```text
+/?level=level-four
+```
+
+Отдельный JS-конфиг или scene class для нового уровня не нужен. Если `.tmj` лежит в `assets/levels` и у карты есть уникальный `id`, dev-server добавит уровень в manifest автоматически.
