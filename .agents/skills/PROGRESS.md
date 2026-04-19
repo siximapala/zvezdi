@@ -400,3 +400,22 @@ Checked:
 - `npm run check` passes.
 - Dev server manifest still has no errors.
 - Local dev server returns HTTP 200 for `/?level=2`.
+
+2026-04-19 double-up vine toggle
+
+Done:
+- Removed Green's separate vine ability key.
+- Vine now toggles on double-tap of Green's jump/up key (`I` in the current controls).
+- Holding `I`/`M` while attached still changes vine length, and `J/L` still swings.
+- Reset the double-tap timer on respawn.
+- Updated menu, README, JS fallback notes, and Tiled note text from `U` to double `I`.
+
+Checked:
+- `npm run check` passes.
+- Local dev server returns HTTP 200 for `/?level=2`.
+
+2026-04-19 new level checklist doc
+
+Done:
+- Added `docs/NEW_LEVEL_TODO.md` with a practical Tiled checklist for creating new levels.
+- Linked the checklist from `README.md`.
