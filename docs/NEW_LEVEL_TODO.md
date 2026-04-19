@@ -2,6 +2,8 @@
 
 ## Быстрый путь
 
+Уровень добавляется только файлом `.tmj` в `assets/levels`. JS-конфиг и отдельную scene class создавать не нужно.
+
 1. Скопируй существующий уровень:
 
 ```text
@@ -22,21 +24,12 @@ assets/levels/level-four.tmj
 
 4. Задай map properties:
 
-```text
-id = level-four
-alias = 4
-title = Level 4
-nextLevel = level-five
-worldWidth = 3200
-worldHeight = 720
-```
-
 Минимум:
 
 ```text
 id = level-four
 alias = 4
-nextLevel = null
+nextLevel = level-five
 ```
 
 5. Если это последний уровень:
@@ -53,7 +46,7 @@ nextLevel = level-five
 
 6. Убедись, что есть слой `Spawns`.
 
-На нём должны быть point objects:
+На нём должны быть все три точки спавна персонажей:
 
 ```text
 pink
@@ -63,7 +56,7 @@ green
 
 7. Убедись, что есть слой `Goals`.
 
-На нём должны быть rectangle objects:
+На нём должны быть прямоугольники конечных целей:
 
 ```text
 pink

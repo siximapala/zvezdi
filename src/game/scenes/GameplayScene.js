@@ -1,5 +1,5 @@
 ﻿import { CHARACTERS, CHARACTER_BY_ID } from '../config/characters.js';
-import { MATERIALS } from '../config/level-one.js';
+import { MATERIALS } from '../config/materials.js';
 import { playCharacterAnimation } from '../systems/animations.js';
 import { hideHud, setHudMessage, updateHud } from '../systems/hud.js';
 import {

@@ -419,3 +419,23 @@ Checked:
 Done:
 - Added `docs/NEW_LEVEL_TODO.md` with a practical Tiled checklist for creating new levels.
 - Linked the checklist from `README.md`.
+
+2026-04-19 Russian Tiled docs
+
+Done:
+- Rewrote `docs/TILED_LEVELS.md` in Russian while preserving the same layer/property contract.
+
+2026-04-19 assets-only level registry
+
+Done:
+- Removed built-in JS level configs from the runtime registry. `assets/levels/*.tmj` is now the only level source.
+- Added Tiled versions of the old level 1 and level 3 as `assets/levels/level-one.tmj` and `assets/levels/level-three.tmj`.
+- Fixed copied `assets/levels/level-four.tmj` metadata so it has unique `id = level-four`, `alias = 4`, and no accidental duplicate `level-two` manifest entry.
+- Kept shared gameplay logic in `GameplayScene`; BootScene still discovers `.tmj` maps through the generated manifest and registers scenes dynamically.
+- Updated README/Tiled docs to remove the old JS fallback/config wording.
+
+Checked:
+- `npm run check` passes.
+- Dev-server manifest lists `level-one`, `level-two`, `level-three`, and `level-four` with no duplicate ids or manifest errors.
+- Registry sorting resolves the order as `level-one -> level-two -> level-three -> level-four`.
+- Tiled parser converts every `.tmj` in `assets/levels` with spawns, goals, and gameplay objects present.
