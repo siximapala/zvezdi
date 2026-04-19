@@ -460,3 +460,28 @@ Done:
 Checked:
 - `npm run check` passes.
 - All `.tmj` files in `assets/levels` parse as JSON.
+
+2026-04-19 Tiled mechanic layer recovery
+
+Done:
+- Made the Tiled importer recover common copied mechanics by object name even if they are pasted onto the wrong object layer.
+- `pink-plate`, `blue-plate`, and `green-plate` are now parsed as colored plates by name and removed from neutral geometry when accidentally left on `Neutral`.
+- `final-door` is now parsed as a door by name and defaults to opening from `pink-plate,blue-plate,green-plate` when `opensWhen` is missing.
+- Kept the heuristic narrow so neutral helper platforms like `plate-step` are not misclassified as mechanics.
+- Set the copied `level-five.tmj` plates and final door to `latch = false`, so the door requires all three plates to be pressed simultaneously.
+- Updated Tiled docs and the new-level checklist with the recovery behavior and the recommended proper layers.
+
+Checked:
+- `npm run check` passes.
+- `level-three.tmj` still parses with 7 neutral blocks and 3 color plates.
+- `level-five.tmj` now parses the misplaced copied objects as 3 plates and 1 final door, all non-latching.
+
+2026-04-19 level five final door latch
+
+Done:
+- Changed only the copied `final-door` in `level-five.tmj` to `latch = true`.
+- Kept `pink-plate`, `blue-plate`, and `green-plate` as `latch = false`, so all three players must stand on them at the same time once, then the door stays open.
+
+Checked:
+- `npm run check` passes.
+- Tiled parser reports level five plates as non-latching and `final-door` as latching.
