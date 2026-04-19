@@ -71,7 +71,8 @@ W - прыжок
 ```text
 J / L - движение
 I - прыжок
-U - лоза / крюк
+I x2 - лоза / крюк
+M - удлинить лозу
 ```
 
 Общее:
@@ -118,4 +119,10 @@ Full layer/property guide:
 
 ```text
 docs/TILED_LEVELS.md
+```
+
+New level checklist:
+
+```text
+docs/NEW_LEVEL_TODO.md
 ```
