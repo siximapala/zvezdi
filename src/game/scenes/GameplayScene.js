@@ -60,11 +60,12 @@ const ONE_WAY_PLATFORM = {
 
 const PLAYER_BODY = {
   width: 42,
-  height: 76
+  height: 98
 };
 
 const DEATH_ANIMATION_DURATION_MS = 340;
 const GREEN_LEAVES_OFFSET = 26;
+const PLAYER_STACK_CENTER_PADDING = 10;
 
 const GROUND_CONTACT = {
   topGraceAbove: 30,
@@ -348,10 +349,10 @@ export class GameplayScene extends PhaserScene {
       return;
     }
 
-    if (this.isAbove(first.sprite.body, second.sprite.body, 18)) {
+    if (this.isAbove(first.sprite.body, second.sprite.body, PLAYER_STACK_CENTER_PADDING)) {
       this.markGrounded(first, 'neutral', time, second.sprite.body);
       first.ridingPlayerAt = time;
-    } else if (this.isAbove(second.sprite.body, first.sprite.body, 18)) {
+    } else if (this.isAbove(second.sprite.body, first.sprite.body, PLAYER_STACK_CENTER_PADDING)) {
       this.markGrounded(second, 'neutral', time, first.sprite.body);
       second.ridingPlayerAt = time;
     }
@@ -948,6 +949,18 @@ export class GameplayScene extends PhaserScene {
   }
 
   drawBackdrop() {
+    const backgroundPath = this.level.background || 'assets/sprites/new-bg.png';
+    const backgroundKey = `background:${backgroundPath}`;
+
+    if (this.textures.exists(backgroundKey)) {
+      this.add
+        .image(0, 0, backgroundKey)
+        .setOrigin(0, 0)
+        .setDisplaySize(this.level.world.width, this.level.world.height)
+        .setDepth(-10);
+      return;
+    }
+
     const graphics = this.add.graphics();
 
     graphics.fillStyle(0xf5f6f2, 1);

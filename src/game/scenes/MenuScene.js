@@ -60,7 +60,7 @@ export class MenuScene extends PhaserScene {
 
     CHARACTERS.forEach((character, index) => {
       const sprite = this.add.image(870 + index * 84, 380 + index * 18, character.textureKey);
-      sprite.setScale(2.2);
+      sprite.setScale(3.3);
 
       this.add.circle(sprite.x, sprite.y, 96, character.lightColor, 0.16).setBlendMode(Phaser.BlendModes.ADD);
       sprite.setDepth(2);

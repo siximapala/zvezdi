@@ -564,6 +564,11 @@
          "value":"4"
         }, 
         {
+         "name":"background",
+         "type":"string",
+         "value":"assets/sprites/bg-1.png"
+        }, 
+        {
          "name":"id",
          "type":"string",
          "value":"level-four"

@@ -52,6 +52,7 @@ function entryFromManifestItem(item) {
     startMessage: stringValue(item.startMessage, 'Доведите всех троих до своих световых ворот'),
     completeMessage: stringValue(item.completeMessage, 'Уровень пройден. Enter: дальше'),
     nextLevel: nullableString(item.nextLevel),
+    background: nullableString(item.background),
     world: {
       width: numberValue(item.worldWidth, 1280),
       height: numberValue(item.worldHeight, 720)

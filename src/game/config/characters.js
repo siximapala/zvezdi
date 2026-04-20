@@ -30,7 +30,7 @@ export const CHARACTERS = [
     lightColor: 0x89d0ff,
     spawn: { x: 190, y: 560 },
     speed: 258,
-    jump: 590,
+    jump: 610,
     controls: {
       left: 'LEFT',
       right: 'RIGHT',

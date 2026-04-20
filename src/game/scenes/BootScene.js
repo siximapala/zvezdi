@@ -6,6 +6,7 @@ import { GameplayScene } from './GameplayScene.js';
 const PhaserScene = window.Phaser?.Scene ?? class {};
 const LEVEL_MANIFEST_KEY = 'level-manifest';
 const LEVEL_MANIFEST_PATH = 'assets/levels/manifest.json';
+const DEFAULT_BACKGROUND_PATH = 'assets/sprites/new-bg.png';
 
 export class BootScene extends PhaserScene {
   constructor() {
@@ -14,6 +15,10 @@ export class BootScene extends PhaserScene {
 
   preload() {
     for (const character of CHARACTERS) {
+      this.load.spritesheet(`${character.id}-static`, `assets/sprites/${character.id}-static.png`, {
+        frameWidth: 32,
+        frameHeight: 32
+      });
       this.load.spritesheet(character.textureKey, `assets/sprites/${character.textureKey}.png`, {
         frameWidth: 32,
         frameHeight: 32
@@ -27,6 +32,7 @@ export class BootScene extends PhaserScene {
       frameWidth: 32,
       frameHeight: 32
     });
+    this.load.image('one-spike', 'assets/sprites/one-spike.png');
 
     this.load.json(LEVEL_MANIFEST_KEY, LEVEL_MANIFEST_PATH);
   }
@@ -50,12 +56,40 @@ export class BootScene extends PhaserScene {
     }
 
     if (!queued) {
+      this.loadLevelBackgroundsThenStart();
+      return;
+    }
+
+    this.load.once('complete', () => this.loadLevelBackgroundsThenStart());
+    this.load.start();
+  }
+
+  loadLevelBackgroundsThenStart() {
+    let queued = false;
+
+    for (const { level } of levelEntries()) {
+      const backgroundPath = this.backgroundPathFor(level);
+      const key = backgroundTextureKey(backgroundPath);
+
+      if (!this.textures.exists(key)) {
+        this.load.image(key, backgroundPath);
+        queued = true;
+      }
+    }
+
+    if (!queued) {
       this.startRequestedScene();
       return;
     }
 
     this.load.once('complete', () => this.startRequestedScene());
     this.load.start();
+  }
+
+  backgroundPathFor(level) {
+    const tiledMap = level.tiledKey ? this.cache.json.get(level.tiledKey) : null;
+    const tiledBackground = tiledMap?.properties?.find?.((entry) => entry.name === 'background')?.value;
+    return tiledBackground || level.background || DEFAULT_BACKGROUND_PATH;
   }
 
   startRequestedScene() {
@@ -82,4 +116,8 @@ export class BootScene extends PhaserScene {
       this.scene.add(entry.sceneKey, SceneClass, false);
     }
   }
+}
+
+function backgroundTextureKey(backgroundPath) {
+  return `background:${backgroundPath}`;
 }

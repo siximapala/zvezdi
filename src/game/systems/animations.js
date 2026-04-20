@@ -5,6 +5,7 @@ export function registerCharacterAnimations(scene) {
     const idleKey = `${character.id}:idle`;
     const runKey = `${character.id}:run`;
     const deathKey = `${character.id}:death`;
+    const idleTextureKey = `${character.id}-static`;
 
     if (scene.anims.exists(idleKey)) {
       continue;
@@ -12,8 +13,8 @@ export function registerCharacterAnimations(scene) {
 
     scene.anims.create({
       key: idleKey,
-      frames: [{ key: character.textureKey, frame: 0 }],
-      frameRate: 1,
+      frames: scene.anims.generateFrameNumbers(idleTextureKey, { start: 0, end: 3 }),
+      frameRate: 6,
       repeat: -1
     });
 

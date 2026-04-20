@@ -153,6 +153,7 @@
   "orientation": "orthogonal",
   "properties": [
     { "name": "alias", "type": "string", "value": "1" },
+    { "name": "background", "type": "string", "value": "assets/sprites/bg-1.png" },
     { "name": "completeMessage", "type": "string", "value": "Уровень пройден. Enter: дальше" },
     { "name": "id", "type": "string", "value": "level-one" },
     { "name": "nextLevel", "type": "string", "value": "level-two" },

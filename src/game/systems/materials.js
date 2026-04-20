@@ -67,18 +67,32 @@ export function addMaterialBlock(scene, group, material, config) {
 
 export function addSpikeField(scene, group, material, config) {
   const palette = MATERIALS[material];
-  const graphics = scene.add.graphics();
   const toothWidth = config.width / config.teeth;
+  const spikes = [];
+  let graphics = null;
 
-  graphics.fillStyle(palette.color, 1);
-  graphics.lineStyle(3, palette.edge, 1);
+  if (scene.textures.exists('one-spike')) {
+    for (let index = 0; index < config.teeth; index += 1) {
+      const center = config.x + toothWidth * index + toothWidth / 2;
+      const spike = scene.add
+        .image(center, config.y + config.height, 'one-spike')
+        .setOrigin(0.5, 1)
+        .setDisplaySize(toothWidth, config.height);
 
-  for (let index = 0; index < config.teeth; index += 1) {
-    const left = config.x + toothWidth * index;
-    const center = left + toothWidth / 2;
-    const right = left + toothWidth;
-    graphics.fillTriangle(left, config.y + config.height, center, config.y, right, config.y + config.height);
-    graphics.strokeTriangle(left, config.y + config.height, center, config.y, right, config.y + config.height);
+      spikes.push(spike);
+    }
+  } else {
+    graphics = scene.add.graphics();
+    graphics.fillStyle(palette.color, 1);
+    graphics.lineStyle(3, palette.edge, 1);
+
+    for (let index = 0; index < config.teeth; index += 1) {
+      const left = config.x + toothWidth * index;
+      const center = left + toothWidth / 2;
+      const right = left + toothWidth;
+      graphics.fillTriangle(left, config.y + config.height, center, config.y, right, config.y + config.height);
+      graphics.strokeTriangle(left, config.y + config.height, center, config.y, right, config.y + config.height);
+    }
   }
 
   const bodyConfig = {
@@ -89,7 +103,7 @@ export function addSpikeField(scene, group, material, config) {
   };
   const body = addStaticRectangleBody(scene, material, bodyConfig);
   const sensor = addMaterialSensor(scene, material, bodyConfig);
-  const entry = { graphics, body, sensor, material, config: bodyConfig };
+  const entry = { graphics, spikes, body, sensor, material, config: bodyConfig };
 
   group.push(entry);
   scene.materialGroups.sensors.push(sensor);

@@ -53,6 +53,7 @@ export function levelFromTiledMap(map, manifestLevel = {}) {
     startMessage: stringValue(mapProperties.startMessage, manifestLevel.startMessage),
     completeMessage: stringValue(mapProperties.completeMessage, manifestLevel.completeMessage),
     nextLevel: nullableString(mapProperties.nextLevel, manifestLevel.nextLevel),
+    background: nullableString(mapProperties.background, manifestLevel.background),
     world: {
       width: worldWidth,
       height: worldHeight

@@ -10,3 +10,6 @@ Original prompt: как правильно добавить в этот прое
 - Added `blue-death.png` as a dedicated death animation for the blue character and made respawn wait for the death sequence before restoring the normal run spritesheet.
 - Extended the same death-animation pipeline to `pink-death.png` and `green-death.png`, so every character now switches to its own `*-death` spritesheet before respawn.
 - Added `green-leavesh.png` as a 6-frame grapple effect for the green character; the leaves animation now appears near the star while the vine is attached to a grapple anchor.
+- Added `pink-static.png`, `blue-static.png`, and `green-static.png` as dedicated idle spritesheets; all three characters now use their own 4-frame static animation while standing still.
+- Added `one-spike.png` as the visual tile for spike fields; hazards now render by repeating the sprite per tooth while keeping the existing Matter collision/sensor setup.
+- Moved background selection into level config: each level can now define its own `background` path, and BootScene preloads all referenced images before starting gameplay.
