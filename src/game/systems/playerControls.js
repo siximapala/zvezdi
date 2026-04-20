@@ -1,3 +1,8 @@
+const BLUE_FALL_JUMP = {
+  energyScale: 1.1,
+  maxJumpVelocity: 32
+};
+
 export function createControlSet(scene, controls) {
   const Phaser = window.Phaser;
 
@@ -20,6 +25,8 @@ export function updatePlayerMovement(player, now, input = {}) {
   const surfaceBehavior = surface === 'air' ? 'air' : character.surfaces[surface] ?? 'solid';
   const slippery = surfaceBehavior === 'slippery';
   const preserveMomentum = now < player.slopeMomentumUntil;
+  const blueFallJumpAvailable = character.id === 'blue' && !onGround && !player.blueFallJumpUsed;
+  const canGroundJump = onGround && now - (player.lastJumpedAt ?? -1000) > 150;
   const left = keys.left.isDown;
   const right = keys.right.isDown;
   const inputAxis = (right ? 1 : 0) - (left ? 1 : 0);
@@ -29,6 +36,8 @@ export function updatePlayerMovement(player, now, input = {}) {
   const acceleration = onGround ? (slippery ? 0.035 : 0.24) * tuning.accelerationScale : 0.075 * tuning.airControlScale;
   const idleDamping = onGround ? (slippery ? 0.997 : 0.78) : preserveMomentum ? 0.997 : 0.986;
   let nextVelocityX = velocity.x;
+
+  updateBlueFallEnergy(player, onGround);
 
   if (slippery && onGround) {
     const jumpCount = Math.min(player.slipperyJumpCount ?? 0, 2);
@@ -53,7 +62,15 @@ export function updatePlayerMovement(player, now, input = {}) {
   setVelocity(sprite, nextVelocityX, velocity.y);
   sprite.setFrictionAir(slippery || preserveMomentum ? 0.006 : 0.018);
 
-  if (jumpPressed && onGround) {
+  if (onGround) {
+    player.blueFallJumpUsed = false;
+    player.blueFallEnergy = 0;
+    player.blueFallLastY = sprite.y;
+  }
+
+  if (jumpPressed && canGroundJump) {
+    player.lastJumpedAt = now;
+
     if (slippery) {
       player.slipperyJumpCount = Math.min((player.slipperyJumpCount ?? 0) + 1, 2);
       setVelocity(sprite, sprite.body.velocity.x, -(character.jump / 52) * tuning.jumpScale);
@@ -61,6 +78,23 @@ export function updatePlayerMovement(player, now, input = {}) {
     } else {
       player.slipperyJumpCount = 0;
       setVelocity(sprite, sprite.body.velocity.x, -(character.jump / 52) * tuning.jumpScale);
+    }
+  } else if (jumpPressed && blueFallJumpAvailable) {
+    const jumpVelocity = Phaser.Math.Clamp(
+      Math.sqrt(Math.max(0, player.blueFallEnergy ?? 0) * BLUE_FALL_JUMP.energyScale),
+      0,
+      BLUE_FALL_JUMP.maxJumpVelocity
+    );
+
+    if (jumpVelocity > 0) {
+      player.blueFallJumpUsed = true;
+      player.blueFallJumpBurstAt = now;
+      player.blueFallJumpBurstEnergy = player.blueFallEnergy ?? 0;
+      player.blueFallEnergy = 0;
+      player.blueFallLastY = sprite.y;
+      player.lastJumpedAt = now;
+      player.slopeMomentumUntil = now + 850;
+      setVelocity(sprite, sprite.body.velocity.x, -jumpVelocity * tuning.jumpScale);
     }
   }
 
@@ -73,6 +107,24 @@ export function updatePlayerMovement(player, now, input = {}) {
   }
 
   player.wasRidingPlayer = ridingPlayer;
+}
+
+function updateBlueFallEnergy(player, onGround) {
+  if (player.character.id !== 'blue') {
+    return;
+  }
+
+  const currentY = player.sprite.y;
+  const previousY = player.blueFallLastY ?? currentY;
+
+  if (onGround) {
+    player.blueFallLastY = currentY;
+    return;
+  }
+
+  const fallDelta = Math.max(0, currentY - previousY);
+  player.blueFallEnergy = (player.blueFallEnergy ?? 0) + fallDelta;
+  player.blueFallLastY = currentY;
 }
 
 function setVelocity(sprite, x, y) {

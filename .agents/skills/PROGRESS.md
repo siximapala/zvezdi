@@ -498,3 +498,91 @@ Checked:
 - `npm run check` passes.
 - `level-six.tmj` parses as 3 goals, 3 plates, and 1 latching final door.
 - All `.tmj` files parse with exactly 3 valid goals and no invalid goal ids.
+
+2026-04-21 blue fall-jump mechanic
+
+Done:
+- Added Волна's falling air-jump: pressing jump in the air while falling fast enough converts accumulated downward velocity into an upward rebound.
+- The rebound is only available to the blue character, only once before landing, and does nothing if there is no meaningful downward speed.
+- Added a short jump refire guard so the normal ground-jump grace window does not accidentally create a free double jump right after takeoff.
+- Updated menu and README controls to mention the falling rebound.
+
+Checked:
+- `npm run check` passes.
+- Controller simulation: blue with `vy=0` does not rebound; blue with `vy=10` rebounds to `vy=-12.60`; a second in-air press does not trigger another rebound.
+
+2026-04-21 blue fall-jump formula adjustment
+
+Done:
+- Removed the minimum fall-speed threshold and fixed bonus from blue's fall-jump.
+- The air jump now mirrors only accumulated positive downward velocity into upward velocity.
+- If blue is moving upward or has zero fall speed, pressing jump leaves the current velocity untouched and does not spend the air-jump.
+
+Checked:
+- `npm run check` passes.
+- Controller simulation: `vy=-6` stays `-6` and unspent; `vy=0` stays `0` and unspent; `vy=1` rebounds to `-1.08`; `vy=10` rebounds to `-10.80`.
+
+2026-04-21 blue fall-jump energy accumulation
+
+Done:
+- Reworked blue's air rebound from current vertical velocity to accumulated fall distance.
+- The controller now tracks downward distance while blue is airborne and converts that stored fall energy into an upward rebound using a square-root energy curve.
+- Upward movement and zero/negative fall deltas do not add energy, so pressing during an upward jump does not boost or spend the ability.
+- Fall energy resets on landing, respawn, and after a successful rebound.
+
+Checked:
+- `npm run check` passes.
+- Controller simulation: 20px fall rebounds to `vy=-4.69`; 320px fall rebounds to `vy=-18.76`; upward movement keeps `vy=-5.00`, leaves energy at `0`, and does not spend the ability.
+
+2026-04-21 blue fall-jump pixel feedback
+
+Done:
+- Added a small pixel-art feedback effect for blue's fall-jump charge using Phaser graphics.
+- While falling, blue now shows small blue pixel sparks and a chunk meter that grows with accumulated fall energy.
+- On rebound, a short pixel burst ring expands from the character, scaled by the stored energy that was spent.
+- The effect hides during respawn and resets with the fall-jump state.
+
+Checked:
+- `npm run check` passes.
+- Controller simulation still rebounds a 320px fall to `vy=-18.76` and records `burstEnergy=320`.
+
+2026-04-21 stronger blue fall-jump feedback
+
+Done:
+- Made blue's fall-jump charge effect much more visible: larger pixels, more sparks, lower visibility threshold, higher alpha, a rectangular charge outline, and a wider burst.
+- Charge now wraps around the whole character silhouette instead of only sitting near the feet.
+
+Checked:
+- `npm run check` passes.
+
+2026-04-21 remove blue charge outline
+
+Done:
+- Removed the rectangular outline from blue's fall-jump charge effect.
+- Kept the stronger pixel sparks and burst feedback.
+
+Checked:
+- `npm run check` passes.
+
+2026-04-21 remove blue burst outline
+
+Done:
+- Removed the remaining rectangular `strokeRect` from blue's fall-jump burst effect.
+- The rebound feedback now uses only the radial pixel burst, with no square outline.
+
+Checked:
+- `npm run check` passes.
+- `GameplayScene` no longer has any `strokeRect` calls in `updateBlueFallEffect`.
+
+2026-04-21 material recovery from Neutral layer
+
+Done:
+- Fixed `level-seven.tmj` red/pink spikes appearing as black blocks when pasted onto the `Neutral` layer.
+- Tiled importer now excludes objects with explicit `material`/`shape` from neutral geometry and parses them as material objects even if they are on the wrong object layer.
+- Kept the recovery narrow so spawns/goals named `pink`, `blue`, or `green` are not misclassified as materials.
+- Updated Tiled docs and the new-level checklist to mention this recovery behavior.
+
+Checked:
+- `npm run check` passes.
+- `level-seven.tmj` now parses as 13 neutral blocks, 3 pink spike material objects, 3 goals, and 3 spawns.
+- All `.tmj` files parse with valid spawns/goals after the importer change.

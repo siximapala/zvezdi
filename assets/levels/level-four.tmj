@@ -226,16 +226,16 @@
                  "y":1088
                 }, 
                 {
-                 "height":256,
+                 "height":896,
                  "id":98,
                  "name":"ramp-step-1",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":160,
-                 "x":4640,
-                 "y":840
+                 "width":96,
+                 "x":4128,
+                 "y":0
                 }, 
                 {
                  "height":32,
@@ -464,6 +464,18 @@
                  "width":42,
                  "x":968,
                  "y":0
+                }, 
+                {
+                 "height":344,
+                 "id":112,
+                 "name":"ramp-step-1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":4704,
+                 "y":808
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -631,7 +643,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":112,
+ "nextobjectid":113,
  "orientation":"orthogonal",
  "properties":[
         {
