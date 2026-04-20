@@ -111,13 +111,18 @@ function parseNotes(map) {
 }
 
 function parseGoals(map) {
-  return getObjects(map, 'goals').map((object) => {
+  return getObjects(map, 'goals').flatMap((object) => {
     const properties = readProperties(object);
+    const id = characterValue(properties.id, object.name, object.type);
 
-    return {
+    if (!id) {
+      return [];
+    }
+
+    return [{
       ...rectConfig(object),
-      id: characterValue(properties.id, object.name, object.type)
-    };
+      id
+    }];
   });
 }
 

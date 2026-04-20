@@ -77,9 +77,33 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":336,
-                 "x":2352,
+                 "width":664,
+                 "x":2024,
                  "y":1184
+                }, 
+                {
+                 "height":32,
+                 "id":124,
+                 "name":"ramp-step-3",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":168,
+                 "x":936,
+                 "y":968
+                }, 
+                {
+                 "height":32,
+                 "id":136,
+                 "name":"ramp-step-3",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":168,
+                 "x":1488,
+                 "y":968
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -93,37 +117,32 @@
          "name":"Materials",
          "objects":[
                 {
-                 "height":32,
-                 "id":84,
-                 "name":"red-spikes",
+                 "height":48,
+                 "id":134,
+                 "name":"green_platform",
                  "opacity":1,
                  "properties":[
                         {
                          "name":"material",
                          "type":"string",
-                         "value":"red"
+                         "value":"green"
                         }, 
                         {
                          "name":"shape",
                          "type":"string",
-                         "value":"spikes"
-                        }, 
-                        {
-                         "name":"teeth",
-                         "type":"int",
-                         "value":40
+                         "value":"block"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1544,
-                 "x":480,
-                 "y":992
+                 "width":304,
+                 "x":600,
+                 "y":968
                 }, 
                 {
-                 "height":32,
-                 "id":112,
-                 "name":"red-spikes",
+                 "height":48,
+                 "id":135,
+                 "name":"red_platform",
                  "opacity":1,
                  "properties":[
                         {
@@ -134,19 +153,37 @@
                         {
                          "name":"shape",
                          "type":"string",
-                         "value":"spikes"
-                        }, 
-                        {
-                         "name":"teeth",
-                         "type":"int",
-                         "value":8
+                         "value":"block"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":320,
-                 "x":2032,
-                 "y":1184
+                 "width":304,
+                 "x":1136,
+                 "y":968
+                }, 
+                {
+                 "height":48,
+                 "id":137,
+                 "name":"blue_platform",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"material",
+                         "type":"string",
+                         "value":"blue"
+                        }, 
+                        {
+                         "name":"shape",
+                         "type":"string",
+                         "value":"block"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":304,
+                 "x":1720,
+                 "y":960
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -227,138 +264,6 @@
                  "width":48,
                  "x":2496,
                  "y":1120
-                }, 
-                {
-                 "height":16,
-                 "id":120,
-                 "name":"pink-plate",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"color",
-                         "type":"color",
-                         "value":"#ffd94f8a"
-                        }, 
-                        {
-                         "name":"id",
-                         "type":"string",
-                         "value":"pink-plate"
-                        }, 
-                        {
-                         "name":"latch",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"requires",
-                         "type":"string",
-                         "value":"pink"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":72,
-                 "x":2176,
-                 "y":1168
-                }, 
-                {
-                 "height":16,
-                 "id":121,
-                 "name":"blue-plate",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"color",
-                         "type":"color",
-                         "value":"#ff5fa1c9"
-                        }, 
-                        {
-                         "name":"id",
-                         "type":"string",
-                         "value":"blue-plate"
-                        }, 
-                        {
-                         "name":"latch",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"requires",
-                         "type":"string",
-                         "value":"blue"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":72,
-                 "x":2176,
-                 "y":1072
-                }, 
-                {
-                 "height":16,
-                 "id":122,
-                 "name":"green-plate",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"color",
-                         "type":"color",
-                         "value":"#ff8fc68d"
-                        }, 
-                        {
-                         "name":"id",
-                         "type":"string",
-                         "value":"green-plate"
-                        }, 
-                        {
-                         "name":"latch",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"requires",
-                         "type":"string",
-                         "value":"green"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":72,
-                 "x":2176,
-                 "y":992
-                }, 
-                {
-                 "height":544,
-                 "id":123,
-                 "name":"final-door",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"color",
-                         "type":"color",
-                         "value":"#ff111111"
-                        }, 
-                        {
-                         "name":"id",
-                         "type":"string",
-                         "value":"final-door"
-                        }, 
-                        {
-                         "name":"latch",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"opensWhen",
-                         "type":"string",
-                         "value":"pink-plate,blue-plate,green-plate"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":42,
-                 "x":2312,
-                 "y":640
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -378,23 +283,23 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":124,
+ "nextobjectid":138,
  "orientation":"orthogonal",
  "properties":[
         {
          "name":"alias",
          "type":"string",
-         "value":"5"
+         "value":"6"
         }, 
         {
          "name":"id",
          "type":"string",
-         "value":"level-five"
+         "value":"level-six"
         }, 
         {
          "name":"nextLevel",
          "type":"string",
-         "value":"6"
+         "value":"null"
         }, 
         {
          "name":"worldHeight",

@@ -485,3 +485,16 @@ Done:
 Checked:
 - `npm run check` passes.
 - Tiled parser reports level five plates as non-latching and `final-door` as latching.
+
+2026-04-21 goal layer robustness for copied mechanics
+
+Done:
+- Fixed a crash when copied plates/doors were pasted onto the `Goals` layer in `level-six.tmj`.
+- Tiled goal parsing now ignores non-character objects on `Goals`, so only `pink`, `blue`, and `green` create finish pads.
+- `GameplayScene.createGoals()` now skips unknown goal ids with a console warning instead of crashing on `character.color`.
+- Existing name-based recovery still parses misplaced `pink-plate`, `blue-plate`, `green-plate`, and `final-door` as mechanics.
+
+Checked:
+- `npm run check` passes.
+- `level-six.tmj` parses as 3 goals, 3 plates, and 1 latching final door.
+- All `.tmj` files parse with exactly 3 valid goals and no invalid goal ids.

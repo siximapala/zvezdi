@@ -788,8 +788,16 @@ export class GameplayScene extends PhaserScene {
   }
 
   createGoals() {
-    this.goalZones = this.level.goals.map((goal) => {
+    const validGoals = [];
+
+    this.goalZones = this.level.goals.flatMap((goal) => {
       const character = CHARACTER_BY_ID[goal.id];
+
+      if (!character) {
+        console.warn(`Skipping goal with unknown character id "${goal.id}" in level "${this.level.id}".`);
+        return [];
+      }
+
       const pad = this.add
         .rectangle(goal.x, goal.y, goal.width, goal.height, character.color, 0.2)
         .setOrigin(0, 0)
@@ -797,8 +805,11 @@ export class GameplayScene extends PhaserScene {
 
       pad.characterId = goal.id;
       this.goalState[goal.id] = false;
+      validGoals.push(goal);
       return pad;
     });
+
+    this.level.goals = validGoals;
   }
 
   createUi() {
