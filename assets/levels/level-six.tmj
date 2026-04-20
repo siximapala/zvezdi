@@ -299,7 +299,7 @@
         {
          "name":"nextLevel",
          "type":"string",
-         "value":"null"
+         "value":"7"
         }, 
         {
          "name":"worldHeight",

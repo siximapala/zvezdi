@@ -66,6 +66,11 @@ const PLAYER_BODY = {
 const DEATH_ANIMATION_DURATION_MS = 340;
 const GREEN_LEAVES_OFFSET = 26;
 const PLAYER_STACK_CENTER_PADDING = 10;
+const BLUE_FALL_EFFECT = {
+  maxChargeEnergy: 300,
+  burstMs: 420,
+  pixelSize: 8
+};
 
 const GROUND_CONTACT = {
   topGraceAbove: 30,
@@ -157,6 +162,7 @@ export class GameplayScene extends PhaserScene {
       if (player.respawning) {
         this.updateLight(player);
         this.updateGrappleLeaves(player);
+        this.updateBlueFallEffect(player, time);
         continue;
       }
 
@@ -168,6 +174,7 @@ export class GameplayScene extends PhaserScene {
       updatePlayerMovement(player, time, player.frameInput);
       this.updateLight(player);
       this.updateGrappleLeaves(player);
+      this.updateBlueFallEffect(player, time);
       playCharacterAnimation(player.sprite, player.character, player.isMoving ? 'run' : 'idle');
 
       if (player.sprite.y > this.level.world.height + 90) {
@@ -241,22 +248,31 @@ export class GameplayScene extends PhaserScene {
         character.id === 'green'
           ? this.add.sprite(sprite.x, sprite.y, 'green-leaves', 0).setDepth(4).setScale(2.2).setVisible(false)
           : null;
+      const blueFallEffect =
+        character.id === 'blue' ? this.add.graphics().setDepth(5).setVisible(false) : null;
 
       const player = {
         character,
         sprite,
         aura,
         grappleLeaves,
+        blueFallEffect,
         keys: createControlSet(this, character.controls),
         collisionMask,
         lastSurface: 'neutral',
         surfaceTouchedAt: 0,
         onGroundAt: -1000,
+        lastJumpedAt: -1000,
         ridingPlayerAt: -1000,
         oneWayPlatformBody: null,
         oneWayPlatformAt: -1000,
         slopeMomentumUntil: 0,
         slipperyJumpCount: 0,
+        blueFallJumpUsed: false,
+        blueFallEnergy: 0,
+        blueFallLastY: spawn.y,
+        blueFallJumpBurstAt: -1000,
+        blueFallJumpBurstEnergy: 0,
         slopeSlideDirection: -1,
         respawning: false
       };
@@ -657,6 +673,69 @@ export class GameplayScene extends PhaserScene {
     }
   }
 
+  updateBlueFallEffect(player, time) {
+    const effect = player.blueFallEffect;
+
+    if (!effect) {
+      return;
+    }
+
+    effect.clear();
+
+    const burstAge = time - (player.blueFallJumpBurstAt ?? -1000);
+    const burstProgress = burstAge >= 0 && burstAge <= BLUE_FALL_EFFECT.burstMs ? 1 - burstAge / BLUE_FALL_EFFECT.burstMs : 0;
+    const charge = window.Phaser.Math.Clamp((player.blueFallEnergy ?? 0) / BLUE_FALL_EFFECT.maxChargeEnergy, 0, 1);
+
+    if (player.respawning || (charge <= 0.015 && burstProgress <= 0)) {
+      effect.setVisible(false);
+      return;
+    }
+
+    const x = Math.round(player.sprite.x);
+    const y = Math.round(player.sprite.y);
+    const pixel = BLUE_FALL_EFFECT.pixelSize;
+
+    effect.setVisible(true);
+
+    if (charge > 0.03 && !player.blueFallJumpUsed) {
+      const sparkCount = 5 + Math.floor(charge * 13);
+
+      for (let index = 0; index < sparkCount; index += 1) {
+        const side = index % 2 === 0 ? -1 : 1;
+        const ring = Math.floor(index / 2);
+        const drift = Math.sin(time / 62 + index * 1.7) * 8;
+        const px = Math.round(x + side * (34 + ring * 5) + drift);
+        const py = Math.round(y - 48 + ((index * 19 + Math.floor(time / 18)) % 118));
+        const color = index % 4 === 0 ? 0xf5f6f2 : index % 2 === 0 ? 0x89d0ff : 0x5fa1c9;
+
+        effect.fillStyle(color, 0.42 + charge * 0.56);
+        effect.fillRect(px, py, pixel, pixel);
+      }
+
+      const chunks = Math.max(1, Math.floor(charge * 9));
+
+      for (let index = 0; index < chunks; index += 1) {
+        effect.fillStyle(index % 3 === 0 ? 0xf5f6f2 : index % 2 === 0 ? 0x5fa1c9 : 0x89d0ff, 0.64 + charge * 0.32);
+        effect.fillRect(Math.round(x - 44 + index * 11), Math.round(y + 70), 9, 9);
+      }
+    }
+
+    if (burstProgress > 0) {
+      const burstCharge = window.Phaser.Math.Clamp((player.blueFallJumpBurstEnergy ?? 0) / BLUE_FALL_EFFECT.maxChargeEnergy, 0.25, 1);
+      const radius = 30 + (1 - burstProgress) * 96 * burstCharge;
+      const alpha = burstProgress;
+
+      for (let index = 0; index < 20; index += 1) {
+        const angle = (Math.PI * 2 * index) / 20;
+        const px = Math.round(x + Math.cos(angle) * radius);
+        const py = Math.round(y + Math.sin(angle) * radius);
+
+        effect.fillStyle(index % 2 === 0 ? 0x89d0ff : 0xf5f6f2, alpha);
+        effect.fillRect(px, py, pixel + 3, pixel + 3);
+      }
+    }
+  }
+
   createMechanics() {
     const activatorConfigs = [
       ...(this.level.switches ?? []).map((config) => ({ ...config, type: 'switch' })),
@@ -885,9 +964,15 @@ export class GameplayScene extends PhaserScene {
       player.sprite.setIgnoreGravity(false);
       player.sprite.body.collisionFilter.mask = player.collisionMask;
       player.onGroundAt = -1000;
+      player.lastJumpedAt = -1000;
       player.surfaceTouchedAt = 0;
       player.oneWayPlatformBody = null;
       player.oneWayPlatformAt = -1000;
+      player.blueFallJumpUsed = false;
+      player.blueFallEnergy = 0;
+      player.blueFallLastY = spawn.y;
+      player.blueFallJumpBurstAt = -1000;
+      player.blueFallJumpBurstEnergy = 0;
       player.respawning = false;
     });
   }
