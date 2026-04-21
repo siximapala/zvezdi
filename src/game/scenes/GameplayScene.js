@@ -66,6 +66,7 @@ const PLAYER_BODY = {
 const DEATH_ANIMATION_DURATION_MS = 340;
 const GREEN_LEAVES_OFFSET = 26;
 const PLAYER_STACK_CENTER_PADDING = 10;
+const JUMP_ANIMATION_AIRBORNE_MS = 45;
 
 const GROUND_CONTACT = {
   topGraceAbove: 30,
@@ -168,7 +169,9 @@ export class GameplayScene extends PhaserScene {
       updatePlayerMovement(player, time, player.frameInput);
       this.updateLight(player);
       this.updateGrappleLeaves(player);
-      playCharacterAnimation(player.sprite, player.character, player.isMoving ? 'run' : 'idle');
+      const airborne = time - player.onGroundAt >= JUMP_ANIMATION_AIRBORNE_MS;
+      const animationState = airborne ? 'jump' : player.isMoving ? 'run' : 'idle';
+      playCharacterAnimation(player.sprite, player.character, animationState);
 
       if (player.sprite.y > this.level.world.height + 90) {
         this.respawnPlayer(player, 'Р С—Р В°Р Т‘Р ВµР Р…Р С‘Р Вµ');

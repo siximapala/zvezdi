@@ -3,6 +3,7 @@ import { CHARACTERS } from '../config/characters.js';
 export function registerCharacterAnimations(scene) {
   for (const character of CHARACTERS) {
     const idleKey = `${character.id}:idle`;
+    const jumpKey = `${character.id}:jump`;
     const runKey = `${character.id}:run`;
     const deathKey = `${character.id}:death`;
     const idleTextureKey = `${character.id}-static`;
@@ -21,6 +22,13 @@ export function registerCharacterAnimations(scene) {
     scene.anims.create({
       key: runKey,
       frames: scene.anims.generateFrameNumbers(character.textureKey, { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: jumpKey,
+      frames: scene.anims.generateFrameNumbers(`${character.id}-jump`, { start: 0, end: 3 }),
       frameRate: 10,
       repeat: -1
     });

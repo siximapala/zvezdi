@@ -19,6 +19,10 @@ export class BootScene extends PhaserScene {
         frameWidth: 32,
         frameHeight: 32
       });
+      this.load.spritesheet(`${character.id}-jump`, `assets/sprites/${character.id}-jump.png`, {
+        frameWidth: 32,
+        frameHeight: 32
+      });
       this.load.spritesheet(character.textureKey, `assets/sprites/${character.textureKey}.png`, {
         frameWidth: 32,
         frameHeight: 32

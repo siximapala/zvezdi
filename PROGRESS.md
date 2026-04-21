@@ -13,3 +13,5 @@ Original prompt: как правильно добавить в этот прое
 - Added `pink-static.png`, `blue-static.png`, and `green-static.png` as dedicated idle spritesheets; all three characters now use their own 4-frame static animation while standing still.
 - Added `one-spike.png` as the visual tile for spike fields; hazards now render by repeating the sprite per tooth while keeping the existing Matter collision/sensor setup.
 - Moved background selection into level config: each level can now define its own `background` path, and BootScene preloads all referenced images before starting gameplay.
+- Added `blue-jump.png` as a dedicated jump animation for the blue character and switched blue to the `jump` state whenever it is airborne.
+- Extended jump animations to `pink-jump.png` and `green-jump.png`, and moved the airborne threshold earlier so jump animations begin sooner for all three characters.
