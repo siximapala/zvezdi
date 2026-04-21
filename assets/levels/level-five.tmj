@@ -394,7 +394,7 @@
         {
          "name":"nextLevel",
          "type":"string",
-         "value":"6"
+         "value":"null"
         }, 
         {
          "name":"worldHeight",
