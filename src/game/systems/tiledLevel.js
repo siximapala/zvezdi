@@ -73,12 +73,18 @@ export function levelFromTiledMap(map, manifestLevel = {}) {
 
 function parseNeutral(map) {
   return getObjects(map, 'neutral')
-    .filter((object) => !isImplicitActivator(object, 'plates') && !isImplicitActivator(object, 'switches') && !isImplicitDoor(object))
+    .filter(
+      (object) =>
+        !isImplicitMaterial(object) &&
+        !isImplicitActivator(object, 'plates') &&
+        !isImplicitActivator(object, 'switches') &&
+        !isImplicitDoor(object)
+    )
     .map(rectConfig);
 }
 
 function parseMaterials(map) {
-  return getObjects(map, 'materials').map((object) => {
+  return uniqueObjects([...getObjects(map, 'materials'), ...getAllObjects(map).filter(isImplicitMaterial)]).map((object) => {
     const properties = readProperties(object);
     const typeParts = splitKind(object.type || object.class || object.name);
     const material = materialValue(properties.material, typeParts.material, 'neutral');
@@ -111,13 +117,18 @@ function parseNotes(map) {
 }
 
 function parseGoals(map) {
-  return getObjects(map, 'goals').map((object) => {
+  return getObjects(map, 'goals').flatMap((object) => {
     const properties = readProperties(object);
+    const id = characterValue(properties.id, object.name, object.type);
 
-    return {
+    if (!id) {
+      return [];
+    }
+
+    return [{
       ...rectConfig(object),
-      id: characterValue(properties.id, object.name, object.type)
-    };
+      id
+    }];
   });
 }
 
@@ -338,6 +349,24 @@ function isImplicitDoor(object) {
 
 function isFinalDoor(object) {
   return isImplicitDoor(object) && objectHasToken(object, 'final');
+}
+
+function isImplicitMaterial(object) {
+  const properties = readProperties(object);
+  const tokens = objectTokens(object);
+  const namedMaterial = materialName(tokens[0]);
+  const namedShape = tokens.slice(1).some((token) => ['block', 'spikes', 'slope', 'stairs'].includes(token));
+
+  return Boolean(
+    object.width > 0 &&
+      object.height > 0 &&
+      (materialName(properties.material) ||
+        properties.shape !== undefined ||
+        (namedMaterial && namedShape) ||
+        objectHasToken(object, 'spikes') ||
+        objectHasToken(object, 'slope') ||
+        objectHasToken(object, 'stairs'))
+  );
 }
 
 function stringValue(...values) {

@@ -1,5 +1,5 @@
 { "compressionlevel":-1,
- "height":23,
+ "height":39,
  "infinite":false,
  "layers":[
         {
@@ -17,8 +17,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":130,
-                 "y":560
+                 "x":160,
+                 "y":1120
                 }, 
                 {
                  "height":0,
@@ -30,8 +30,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":190,
-                 "y":560
+                 "x":32,
+                 "y":1120
                 }, 
                 {
                  "height":0,
@@ -43,8 +43,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":250,
-                 "y":560
+                 "x":104,
+                 "y":1128
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -58,30 +58,6 @@
          "name":"Neutral",
          "objects":[
                 {
-                 "height":96,
-                 "id":10,
-                 "name":"left-floor",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":416,
-                 "x":0,
-                 "y":640
-                }, 
-                {
-                 "height":128,
-                 "id":11,
-                 "name":"ramp-step-1",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":160,
-                 "x":416,
-                 "y":608
-                }, 
-                {
                  "height":32,
                  "id":12,
                  "name":"ramp-step-2",
@@ -90,8 +66,8 @@
                  "type":"",
                  "visible":true,
                  "width":96,
-                 "x":448,
-                 "y":576
+                 "x":480,
+                 "y":896
                 }, 
                 {
                  "height":32,
@@ -103,7 +79,7 @@
                  "visible":true,
                  "width":96,
                  "x":256,
-                 "y":544
+                 "y":1088
                 }, 
                 {
                  "height":32,
@@ -114,8 +90,8 @@
                  "type":"",
                  "visible":true,
                  "width":96,
-                 "x":384,
-                 "y":448
+                 "x":352,
+                 "y":992
                 }, 
                 {
                  "height":24,
@@ -126,8 +102,8 @@
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":480,
-                 "y":384
+                 "x":608,
+                 "y":800
                 }, 
                 {
                  "height":96,
@@ -137,69 +113,369 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1024,
-                 "x":1728,
-                 "y":640
+                 "width":4800,
+                 "x":0,
+                 "y":1152
                 }, 
                 {
-                 "height":32,
-                 "id":18,
-                 "name":"right-step-1",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":120,
-                 "x":1824,
-                 "y":512
-                }, 
-                {
-                 "height":32,
-                 "id":19,
-                 "name":"right-step-2",
-                 "opacity":1,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":118,
-                 "x":1984,
-                 "y":480
-                }, 
-                {
-                 "height":224,
+                 "height":128,
                  "id":86,
                  "name":"ramp-step-1",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":64,
-                 "x":512,
-                 "y":416
+                 "width":96,
+                 "x":3104,
+                 "y":760
                 }, 
                 {
-                 "height":96,
-                 "id":87,
+                 "height":632,
+                 "id":89,
                  "name":"ramp-step-1",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":512,
-                 "x":576,
+                 "width":704,
+                 "x":2496,
+                 "y":128
+                }, 
+                {
+                 "height":1024,
+                 "id":90,
+                 "name":"ramp-step-1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1760,
+                 "x":736,
+                 "y":128
+                }, 
+                {
+                 "height":72,
+                 "id":91,
+                 "name":"ramp-step-1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":224,
+                 "x":2976,
+                 "y":888
+                }, 
+                {
+                 "height":32,
+                 "id":92,
+                 "name":"ramp-step-4",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":3296,
+                 "y":224
+                }, 
+                {
+                 "height":32,
+                 "id":93,
+                 "name":"ramp-step-4",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":3480,
+                 "y":320
+                }, 
+                {
+                 "height":32,
+                 "id":94,
+                 "name":"ramp-step-4",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":3680,
+                 "y":384
+                }, 
+                {
+                 "height":32,
+                 "id":95,
+                 "name":"ramp-step-4",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":3912,
+                 "y":328
+                }, 
+                {
+                 "height":64,
+                 "id":97,
+                 "name":"ramp-step-1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":352,
+                 "x":4448,
+                 "y":1088
+                }, 
+                {
+                 "height":896,
+                 "id":98,
+                 "name":"ramp-step-1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":4128,
+                 "y":0
+                }, 
+                {
+                 "height":32,
+                 "id":99,
+                 "name":"ramp-step-2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":352,
+                 "y":736
+                }, 
+                {
+                 "height":32,
+                 "id":100,
+                 "name":"ramp-step-2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":160,
                  "y":640
                 }, 
                 {
                  "height":32,
-                 "id":88,
+                 "id":101,
+                 "name":"ramp-step-2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":352,
+                 "y":576
+                }, 
+                {
+                 "height":32,
+                 "id":102,
+                 "name":"ramp-step-2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":544,
+                 "y":512
+                }, 
+                {
+                 "height":32,
+                 "id":103,
+                 "name":"ramp-step-2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":192,
+                 "x":224,
+                 "y":448
+                }, 
+                {
+                 "height":32,
+                 "id":104,
+                 "name":"ramp-step-2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":192,
+                 "x":480,
+                 "y":352
+                }, 
+                {
+                 "height":32,
+                 "id":105,
+                 "name":"ramp-step-2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":192,
+                 "x":256,
+                 "y":256
+                }, 
+                {
+                 "height":32,
+                 "id":106,
+                 "name":"ramp-step-2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":192,
+                 "x":480,
+                 "y":192
+                }, 
+                {
+                 "height":16,
+                 "id":108,
+                 "name":"pink-plate",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd94f8a"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"pink-plate"
+                        }, 
+                        {
+                         "name":"latch",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"requires",
+                         "type":"string",
+                         "value":"pink"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":736,
+                 "y":112
+                }, 
+                {
+                 "height":16,
+                 "id":109,
+                 "name":"blue-plate",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff5fa1c9"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"blue-plate"
+                        }, 
+                        {
+                         "name":"latch",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"requires",
+                         "type":"string",
+                         "value":"blue"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":72,
+                 "x":808,
+                 "y":112
+                }, 
+                {
+                 "height":16,
+                 "id":110,
+                 "name":"green-plate",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff8fc68d"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"green-plate"
+                        }, 
+                        {
+                         "name":"latch",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
+                         "name":"requires",
+                         "type":"string",
+                         "value":"green"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":72,
+                 "x":888,
+                 "y":112
+                }, 
+                {
+                 "height":128,
+                 "id":111,
+                 "name":"final-door",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff111111"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"final-door"
+                        }, 
+                        {
+                         "name":"latch",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"opensWhen",
+                         "type":"string",
+                         "value":"pink-plate,blue-plate,green-plate"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":42,
+                 "x":968,
+                 "y":0
+                }, 
+                {
+                 "height":344,
+                 "id":112,
                  "name":"ramp-step-1",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":32,
-                 "x":512,
-                 "y":384
+                 "width":96,
+                 "x":4704,
+                 "y":808
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -212,34 +488,6 @@
          "id":3,
          "name":"Materials",
          "objects":[
-                {
-                 "height":256,
-                 "id":30,
-                 "name":"big-blue-ramp",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"direction",
-                         "type":"string",
-                         "value":"downRight"
-                        }, 
-                        {
-                         "name":"material",
-                         "type":"string",
-                         "value":"blue"
-                        }, 
-                        {
-                         "name":"shape",
-                         "type":"string",
-                         "value":"slope"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":544,
-                 "x":544,
-                 "y":384
-                }, 
                 {
                  "height":32,
                  "id":84,
@@ -259,14 +507,14 @@
                         {
                          "name":"teeth",
                          "type":"int",
-                         "value":5
+                         "value":25
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":608,
-                 "x":1888,
-                 "y":608
+                 "width":1440,
+                 "x":3008,
+                 "y":1120
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -305,66 +553,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":1325,
-                 "y":230
-                }, 
-                {
-                 "height":0,
-                 "id":41,
-                 "name":"vine-2",
-                 "opacity":1,
-                 "point":true,
-                 "properties":[
-                        {
-                         "name":"maxLength",
-                         "type":"float",
-                         "value":520
-                        }, 
-                        {
-                         "name":"minLength",
-                         "type":"float",
-                         "value":74
-                        }, 
-                        {
-                         "name":"radius",
-                         "type":"float",
-                         "value":560
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":2208,
-                 "y":256
-                }, 
-                {
-                 "height":0,
-                 "id":85,
-                 "name":"vine-3",
-                 "opacity":1,
-                 "point":true,
-                 "properties":[
-                        {
-                         "name":"maxLength",
-                         "type":"float",
-                         "value":520
-                        }, 
-                        {
-                         "name":"minLength",
-                         "type":"float",
-                         "value":74
-                        }, 
-                        {
-                         "name":"radius",
-                         "type":"float",
-                         "value":560
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":2656,
-                 "y":160
+                 "x":2816,
+                 "y":784
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -376,40 +566,7 @@
          "draworder":"topdown",
          "id":5,
          "name":"Plates",
-         "objects":[
-                {
-                 "height":32,
-                 "id":50,
-                 "name":"green-bridge",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"color",
-                         "type":"color",
-                         "value":"#ff8fc68d"
-                        }, 
-                        {
-                         "name":"id",
-                         "type":"string",
-                         "value":"green-bridge"
-                        }, 
-                        {
-                         "name":"latch",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"requires",
-                         "type":"string",
-                         "value":"green"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":96,
-                 "x":1728,
-                 "y":608
-                }],
+         "objects":[],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -420,40 +577,7 @@
          "draworder":"topdown",
          "id":6,
          "name":"Bridges",
-         "objects":[
-                {
-                 "height":32,
-                 "id":60,
-                 "name":"gap-bridge",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"appearsWhen",
-                         "type":"string",
-                         "value":"green-bridge"
-                        }, 
-                        {
-                         "name":"color",
-                         "type":"color",
-                         "value":"#ff111111"
-                        }, 
-                        {
-                         "name":"id",
-                         "type":"string",
-                         "value":"gap-bridge"
-                        }, 
-                        {
-                         "name":"latch",
-                         "type":"bool",
-                         "value":true
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":640,
-                 "x":1088,
-                 "y":640
-                }],
+         "objects":[],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -474,8 +598,8 @@
                  "type":"",
                  "visible":true,
                  "width":48,
-                 "x":2560,
-                 "y":576
+                 "x":4544,
+                 "y":1024
                 }, 
                 {
                  "height":58,
@@ -486,8 +610,8 @@
                  "type":"",
                  "visible":true,
                  "width":48,
-                 "x":2688,
-                 "y":576
+                 "x":4736,
+                 "y":744
                 }, 
                 {
                  "height":58,
@@ -498,8 +622,8 @@
                  "type":"",
                  "visible":true,
                  "width":48,
-                 "x":2624,
-                 "y":160
+                 "x":3032,
+                 "y":816
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -511,43 +635,7 @@
          "draworder":"topdown",
          "id":8,
          "name":"Notes",
-         "objects":[
-                {
-                 "height":32,
-                 "id":81,
-                 "name":"ramp-note",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"text",
-                         "type":"string",
-                         "value":"\u041a\u0430\u043a \u0436\u0435 \u043f\u0435\u0440\u0435\u043b\u0435\u0442\u0435\u0442\u044c \u0447\u0435\u0440\u0435\u0437 \u043e\u0431\u0440\u044b\u0432?"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":360,
-                 "x":640,
-                 "y":320
-                }, 
-                {
-                 "height":32,
-                 "id":82,
-                 "name":"vine-note",
-                 "opacity":1,
-                 "properties":[
-                        {
-                         "name":"text",
-                         "type":"string",
-                         "value":"\u0414\u0432\u043e\u0439\u043d\u043e\u0435 I \u043f\u0435\u0440\u0435\u043a\u043b\u044e\u0447\u0430\u0435\u0442 \u043b\u043e\u0437\u0443. I\/M \u0438\u0437\u043c\u0435\u043d\u044f\u0435\u0442 \u0434\u043b\u0438\u043d\u0443. J\/L \u043c\u0435\u043d\u044f\u0435\u0442 \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":390,
-                 "x":1130,
-                 "y":360
-                }],
+         "objects":[],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -555,18 +643,13 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":89,
+ "nextobjectid":113,
  "orientation":"orthogonal",
  "properties":[
         {
          "name":"alias",
          "type":"string",
          "value":"4"
-        }, 
-        {
-         "name":"background",
-         "type":"string",
-         "value":"assets/sprites/bg-1.png"
         }, 
         {
          "name":"id",
@@ -576,12 +659,12 @@
         {
          "name":"nextLevel",
          "type":"string",
-         "value":"null"
+         "value":"5"
         }, 
         {
          "name":"worldHeight",
          "type":"int",
-         "value":720
+         "value":920
         }, 
         {
          "name":"worldWidth",
@@ -595,5 +678,5 @@
  "tilewidth":32,
  "type":"map",
  "version":"1.10",
- "width":86
+ "width":150
 }

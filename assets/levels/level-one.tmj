@@ -1,173 +1,415 @@
-{
-  "compressionlevel": -1,
-  "height": 23,
-  "infinite": false,
-  "layers": [
-    {
-      "draworder": "topdown",
-      "id": 1,
-      "name": "Spawns",
-      "objects": [
-        { "height": 0, "id": 1, "name": "pink", "point": true, "rotation": 0, "type": "", "visible": true, "width": 0, "x": 130, "y": 560 },
-        { "height": 0, "id": 2, "name": "blue", "point": true, "rotation": 0, "type": "", "visible": true, "width": 0, "x": 190, "y": 560 },
-        { "height": 0, "id": 3, "name": "green", "point": true, "rotation": 0, "type": "", "visible": true, "width": 0, "x": 250, "y": 560 }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 2,
-      "name": "Neutral",
-      "objects": [
-        { "height": 96, "id": 10, "name": "left-floor", "rotation": 0, "type": "", "visible": true, "width": 396, "x": 0, "y": 642 },
-        { "height": 126, "id": 11, "name": "left-wall", "rotation": 0, "type": "", "visible": true, "width": 120, "x": 392, "y": 612 },
-        { "height": 24, "id": 12, "name": "pink-hop-1", "rotation": 0, "type": "", "visible": true, "width": 72, "x": 420, "y": 552 },
-        { "height": 24, "id": 13, "name": "pink-hop-2", "rotation": 0, "type": "", "visible": true, "width": 72, "x": 638, "y": 520 },
-        { "height": 24, "id": 14, "name": "pink-hop-3", "rotation": 0, "type": "", "visible": true, "width": 72, "x": 835, "y": 552 },
-        { "height": 24, "id": 15, "name": "ramp-approach-1", "rotation": 0, "type": "", "visible": true, "width": 82, "x": 1036, "y": 540 },
-        { "height": 24, "id": 16, "name": "ramp-approach-2", "rotation": 0, "type": "", "visible": true, "width": 82, "x": 1160, "y": 502 },
-        { "height": 24, "id": 17, "name": "green-route-1", "rotation": 0, "type": "", "visible": true, "width": 82, "x": 1320, "y": 474 },
-        { "height": 24, "id": 18, "name": "finish-hop", "rotation": 0, "type": "", "visible": true, "width": 72, "x": 1460, "y": 534 },
-        { "height": 86, "id": 19, "name": "right-floor", "rotation": 0, "type": "", "visible": true, "width": 710, "x": 1010, "y": 652 },
-        { "height": 24, "id": 20, "name": "green-route-2", "rotation": 0, "type": "", "visible": true, "width": 124, "x": 1370, "y": 500 },
-        { "height": 24, "id": 21, "name": "green-route-3", "rotation": 0, "type": "", "visible": true, "width": 136, "x": 1500, "y": 440 }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 3,
-      "name": "Materials",
-      "objects": [
+{ "compressionlevel":-1,
+ "height":23,
+ "infinite":false,
+ "layers":[
         {
-          "height": 96,
-          "id": 30,
-          "name": "pink-spikes",
-          "properties": [
-            { "name": "material", "type": "string", "value": "pink" },
-            { "name": "shape", "type": "string", "value": "spikes" },
-            { "name": "teeth", "type": "int", "value": 5 }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 410,
-          "x": 500,
-          "y": 610
-        },
+         "draworder":"topdown",
+         "id":1,
+         "name":"Spawns",
+         "objects":[
+                {
+                 "height":0,
+                 "id":1,
+                 "name":"pink",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":130,
+                 "y":560
+                }, 
+                {
+                 "height":0,
+                 "id":2,
+                 "name":"blue",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":190,
+                 "y":560
+                }, 
+                {
+                 "height":0,
+                 "id":3,
+                 "name":"green",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":250,
+                 "y":560
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
         {
-          "height": 150,
-          "id": 31,
-          "name": "blue-ramp",
-          "properties": [
-            { "name": "material", "type": "string", "value": "blue" },
-            { "name": "shape", "type": "string", "value": "slope" },
-            { "name": "direction", "type": "string", "value": "upRight" }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 430,
-          "x": 1084,
-          "y": 502
-        },
+         "draworder":"topdown",
+         "id":2,
+         "name":"Neutral",
+         "objects":[
+                {
+                 "height":96,
+                 "id":10,
+                 "name":"left-floor",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":396,
+                 "x":0,
+                 "y":642
+                }, 
+                {
+                 "height":126,
+                 "id":11,
+                 "name":"left-wall",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":120,
+                 "x":392,
+                 "y":612
+                }, 
+                {
+                 "height":24,
+                 "id":12,
+                 "name":"pink-hop-1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":72,
+                 "x":420,
+                 "y":552
+                }, 
+                {
+                 "height":24,
+                 "id":13,
+                 "name":"pink-hop-2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":72,
+                 "x":638,
+                 "y":520
+                }, 
+                {
+                 "height":24,
+                 "id":14,
+                 "name":"pink-hop-3",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":72,
+                 "x":835,
+                 "y":552
+                }, 
+                {
+                 "height":86,
+                 "id":19,
+                 "name":"right-floor",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":710,
+                 "x":1010,
+                 "y":652
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
         {
-          "height": 28,
-          "id": 32,
-          "name": "green-bridge-1",
-          "properties": [
-            { "name": "material", "type": "string", "value": "green" },
-            { "name": "shape", "type": "string", "value": "block" }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 150,
-          "x": 1220,
-          "y": 456
-        },
+         "draworder":"topdown",
+         "id":3,
+         "name":"Materials",
+         "objects":[
+                {
+                 "height":96,
+                 "id":30,
+                 "name":"pink-spikes",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"material",
+                         "type":"string",
+                         "value":"pink"
+                        }, 
+                        {
+                         "name":"shape",
+                         "type":"string",
+                         "value":"spikes"
+                        }, 
+                        {
+                         "name":"teeth",
+                         "type":"int",
+                         "value":5
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":410,
+                 "x":512,
+                 "y":616
+                }, 
+                {
+                 "height":152,
+                 "id":31,
+                 "name":"blue-ramp",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":"upRight"
+                        }, 
+                        {
+                         "name":"material",
+                         "type":"string",
+                         "value":"blue"
+                        }, 
+                        {
+                         "name":"shape",
+                         "type":"string",
+                         "value":"slope"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":430,
+                 "x":1064,
+                 "y":496
+                }, 
+                {
+                 "height":28,
+                 "id":32,
+                 "name":"green-bridge-1",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"material",
+                         "type":"string",
+                         "value":"green"
+                        }, 
+                        {
+                         "name":"shape",
+                         "type":"string",
+                         "value":"block"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":150,
+                 "x":1248,
+                 "y":496
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
         {
-          "height": 28,
-          "id": 33,
-          "name": "green-bridge-2",
-          "properties": [
-            { "name": "material", "type": "string", "value": "green" },
-            { "name": "shape", "type": "string", "value": "block" }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 92,
-          "x": 1532,
-          "y": 530
-        }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 4,
-      "name": "Goals",
-      "objects": [
-        { "height": 58, "id": 40, "name": "pink", "rotation": 0, "type": "", "visible": true, "width": 48, "x": 1518, "y": 586 },
-        { "height": 58, "id": 41, "name": "blue", "rotation": 0, "type": "", "visible": true, "width": 48, "x": 1580, "y": 586 },
-        { "height": 58, "id": 42, "name": "green", "rotation": 0, "type": "", "visible": true, "width": 48, "x": 1642, "y": 586 }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 5,
-      "name": "Notes",
-      "objects": [
-        { "height": 32, "id": 50, "name": "note-1", "properties": [{ "name": "text", "type": "string", "value": "Все трое нужны у выхода" }], "rotation": 0, "type": "", "visible": true, "width": 220, "x": 96, "y": 112 },
-        { "height": 32, "id": 51, "name": "note-2", "properties": [{ "name": "text", "type": "string", "value": "Искра держится, остальные сгорают" }], "rotation": 0, "type": "", "visible": true, "width": 260, "x": 500, "y": 548 },
-        { "height": 32, "id": 52, "name": "note-3", "properties": [{ "name": "text", "type": "string", "value": "Волна едет, другие скользят назад" }], "rotation": 0, "type": "", "visible": true, "width": 280, "x": 1032, "y": 584 },
-        { "height": 32, "id": 53, "name": "note-4", "properties": [{ "name": "text", "type": "string", "value": "Мята видит зеленый путь" }], "rotation": 0, "type": "", "visible": true, "width": 240, "x": 1214, "y": 420 }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    }
-  ],
-  "nextlayerid": 6,
-  "nextobjectid": 54,
-  "orientation": "orthogonal",
-  "properties": [
-    { "name": "alias", "type": "string", "value": "1" },
-    { "name": "background", "type": "string", "value": "assets/sprites/bg-1.png" },
-    { "name": "completeMessage", "type": "string", "value": "Уровень пройден. Enter: дальше" },
-    { "name": "id", "type": "string", "value": "level-one" },
-    { "name": "nextLevel", "type": "string", "value": "level-two" },
-    { "name": "startMessage", "type": "string", "value": "Доведите всех троих до своих световых ворот" },
-    { "name": "title", "type": "string", "value": "Уровень 1" },
-    { "name": "worldHeight", "type": "int", "value": 720 },
-    { "name": "worldWidth", "type": "int", "value": 1720 }
-  ],
-  "renderorder": "right-down",
-  "tiledversion": "1.11.2",
-  "tileheight": 32,
-  "tilesets": [],
-  "tilewidth": 32,
-  "type": "map",
-  "version": "1.10",
-  "width": 54
+         "draworder":"topdown",
+         "id":4,
+         "name":"Goals",
+         "objects":[
+                {
+                 "height":58,
+                 "id":40,
+                 "name":"pink",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":1518,
+                 "y":586
+                }, 
+                {
+                 "height":58,
+                 "id":41,
+                 "name":"blue",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":1580,
+                 "y":586
+                }, 
+                {
+                 "height":58,
+                 "id":42,
+                 "name":"green",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":1642,
+                 "y":586
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Notes",
+         "objects":[
+                {
+                 "height":32,
+                 "id":50,
+                 "name":"note-1",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"text",
+                         "type":"string",
+                         "value":"\u0412\u0441\u0435 \u0442\u0440\u043e\u0435 \u043d\u0443\u0436\u043d\u044b \u0443 \u0432\u044b\u0445\u043e\u0434\u0430"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":220,
+                 "x":112,
+                 "y":408
+                }, 
+                {
+                 "height":32,
+                 "id":51,
+                 "name":"note-2",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"text",
+                         "type":"string",
+                         "value":"\u0418\u0441\u043a\u0440\u0430 \u0434\u0435\u0440\u0436\u0438\u0442\u0441\u044f, \u043e\u0441\u0442\u0430\u043b\u044c\u043d\u044b\u0435 \u0441\u0433\u043e\u0440\u0430\u044e\u0442"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":260,
+                 "x":500,
+                 "y":548
+                }, 
+                {
+                 "height":32,
+                 "id":52,
+                 "name":"note-3",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"text",
+                         "type":"string",
+                         "value":"\u0412\u043e\u043b\u043d\u0430 \u0435\u0434\u0435\u0442, \u0434\u0440\u0443\u0433\u0438\u0435 \u0441\u043a\u043e\u043b\u044c\u0437\u044f\u0442 \u043d\u0430\u0437\u0430\u0434"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":280,
+                 "x":1032,
+                 "y":584
+                }, 
+                {
+                 "height":32,
+                 "id":53,
+                 "name":"note-4",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"text",
+                         "type":"string",
+                         "value":"\u041c\u044f\u0442\u0430 \u0432\u0438\u0434\u0438\u0442 \u0437\u0435\u043b\u0435\u043d\u044b\u0439 \u043f\u0443\u0442\u044c"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":240,
+                 "x":1214,
+                 "y":420
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":6,
+ "nextobjectid":54,
+ "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"alias",
+         "type":"string",
+         "value":"1"
+        }, 
+        {
+         "name":"background",
+         "type":"string",
+         "value":"assets\/sprites\/bg-1.png"
+        }, 
+        {
+         "name":"completeMessage",
+         "type":"string",
+         "value":"\u0423\u0440\u043e\u0432\u0435\u043d\u044c \u043f\u0440\u043e\u0439\u0434\u0435\u043d. Enter: \u0434\u0430\u043b\u044c\u0448\u0435"
+        }, 
+        {
+         "name":"id",
+         "type":"string",
+         "value":"level-one"
+        }, 
+        {
+         "name":"nextLevel",
+         "type":"string",
+         "value":"level-two"
+        }, 
+        {
+         "name":"startMessage",
+         "type":"string",
+         "value":"\u0414\u043e\u0432\u0435\u0434\u0438\u0442\u0435 \u0432\u0441\u0435\u0445 \u0442\u0440\u043e\u0438\u0445 \u0434\u043e \u0441\u0432\u043e\u0438\u0445 \u0441\u0432\u0435\u0442\u043e\u0432\u044b\u0445 \u0432\u043e\u0440\u043e\u0442"
+        }, 
+        {
+         "name":"title",
+         "type":"string",
+         "value":"\u0423\u0440\u043e\u0432\u0435\u043d\u044c 1"
+        }, 
+        {
+         "name":"worldHeight",
+         "type":"int",
+         "value":720
+        }, 
+        {
+         "name":"worldWidth",
+         "type":"int",
+         "value":1720
+        }],
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":54
 }

@@ -1,292 +1,604 @@
-{
-  "compressionlevel": -1,
-  "height": 23,
-  "infinite": false,
-  "layers": [
-    {
-      "draworder": "topdown",
-      "id": 1,
-      "name": "Spawns",
-      "objects": [
-        { "height": 0, "id": 1, "name": "pink", "point": true, "rotation": 0, "type": "", "visible": true, "width": 0, "x": 130, "y": 560 },
-        { "height": 0, "id": 2, "name": "blue", "point": true, "rotation": 0, "type": "", "visible": true, "width": 0, "x": 190, "y": 560 },
-        { "height": 0, "id": 3, "name": "green", "point": true, "rotation": 0, "type": "", "visible": true, "width": 0, "x": 250, "y": 560 }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 2,
-      "name": "Neutral",
-      "objects": [
-        { "height": 96, "id": 10, "name": "left-floor", "rotation": 0, "type": "", "visible": true, "width": 430, "x": 0, "y": 642 },
-        { "height": 96, "id": 11, "name": "middle-floor", "rotation": 0, "type": "", "visible": true, "width": 270, "x": 520, "y": 642 },
-        { "height": 96, "id": 12, "name": "right-floor", "rotation": 0, "type": "", "visible": true, "width": 960, "x": 940, "y": 642 },
-        { "height": 24, "id": 13, "name": "tower-step-1", "rotation": 0, "type": "", "visible": true, "width": 120, "x": 545, "y": 512 },
-        { "height": 24, "id": 14, "name": "tower-step-2", "rotation": 0, "type": "", "visible": true, "width": 150, "x": 690, "y": 430 },
-        { "height": 24, "id": 15, "name": "plate-step", "rotation": 0, "type": "", "visible": true, "width": 220, "x": 1205, "y": 548 },
-        { "height": 24, "id": 16, "name": "green-step", "rotation": 0, "type": "", "visible": true, "width": 165, "x": 1465, "y": 500 }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 3,
-      "name": "Materials",
-      "objects": [
+{ "compressionlevel":-1,
+ "height":23,
+ "infinite":false,
+ "layers":[
         {
-          "height": 112,
-          "id": 30,
-          "name": "blue-ramp",
-          "properties": [
-            { "name": "material", "type": "string", "value": "blue" },
-            { "name": "shape", "type": "string", "value": "slope" },
-            { "name": "direction", "type": "string", "value": "upRight" }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 336,
-          "x": 1010,
-          "y": 530
-        },
+         "draworder":"topdown",
+         "id":1,
+         "name":"Spawns",
+         "objects":[
+                {
+                 "height":0,
+                 "id":1,
+                 "name":"pink",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":352,
+                 "y":600
+                }, 
+                {
+                 "height":0,
+                 "id":2,
+                 "name":"blue",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":272,
+                 "y":600
+                }, 
+                {
+                 "height":0,
+                 "id":3,
+                 "name":"green",
+                 "opacity":1,
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":200,
+                 "y":600
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
         {
-          "height": 76,
-          "id": 31,
-          "name": "pink-spikes",
-          "properties": [
-            { "name": "material", "type": "string", "value": "pink" },
-            { "name": "shape", "type": "string", "value": "spikes" },
-            { "name": "teeth", "type": "int", "value": 2 }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 105,
-          "x": 815,
-          "y": 618
-        },
+         "draworder":"topdown",
+         "id":2,
+         "name":"Neutral",
+         "objects":[
+                {
+                 "height":96,
+                 "id":10,
+                 "name":"left-floor",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":430,
+                 "x":0,
+                 "y":642
+                }, 
+                {
+                 "height":96,
+                 "id":11,
+                 "name":"middle-floor",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":270,
+                 "x":520,
+                 "y":642
+                }, 
+                {
+                 "height":96,
+                 "id":12,
+                 "name":"right-floor",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":960,
+                 "x":940,
+                 "y":642
+                }, 
+                {
+                 "height":24,
+                 "id":13,
+                 "name":"tower-step-1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":120,
+                 "x":545,
+                 "y":512
+                }, 
+                {
+                 "height":24,
+                 "id":14,
+                 "name":"tower-step-2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":150,
+                 "x":690,
+                 "y":430
+                }, 
+                {
+                 "height":16,
+                 "id":15,
+                 "name":"plate-step",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":80,
+                 "x":984,
+                 "y":568
+                }, 
+                {
+                 "height":24,
+                 "id":16,
+                 "name":"green-step",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":1120,
+                 "y":464
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
         {
-          "height": 26,
-          "id": 32,
-          "name": "green-block",
-          "properties": [
-            { "name": "material", "type": "string", "value": "green" },
-            { "name": "shape", "type": "string", "value": "block" }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 118,
-          "x": 1458,
-          "y": 416
-        }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 4,
-      "name": "Switches",
-      "objects": [
+         "draworder":"topdown",
+         "id":3,
+         "name":"Materials",
+         "objects":[
+                {
+                 "height":146,
+                 "id":30,
+                 "name":"blue-ramp",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":"upRight"
+                        }, 
+                        {
+                         "name":"material",
+                         "type":"string",
+                         "value":"blue"
+                        }, 
+                        {
+                         "name":"shape",
+                         "type":"string",
+                         "value":"slope"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":336,
+                 "x":1010,
+                 "y":496
+                }, 
+                {
+                 "height":76,
+                 "id":31,
+                 "name":"pink-spikes",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"material",
+                         "type":"string",
+                         "value":"pink"
+                        }, 
+                        {
+                         "name":"shape",
+                         "type":"string",
+                         "value":"spikes"
+                        }, 
+                        {
+                         "name":"teeth",
+                         "type":"int",
+                         "value":2
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":105,
+                 "x":815,
+                 "y":618
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
         {
-          "height": 18,
-          "id": 40,
-          "name": "tower",
-          "properties": [
-            { "name": "color", "type": "color", "value": "#fff1d93f" },
-            { "name": "id", "type": "string", "value": "tower" },
-            { "name": "label", "type": "string", "value": "верхний свет" },
-            { "name": "latch", "type": "bool", "value": true },
-            { "name": "requires", "type": "string", "value": "any" }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 82,
-          "x": 718,
-          "y": 398
-        }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 5,
-      "name": "Plates",
-      "objects": [
+         "draworder":"topdown",
+         "id":4,
+         "name":"Switches",
+         "objects":[
+                {
+                 "height":18,
+                 "id":40,
+                 "name":"tower",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fff1d93f"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"tower"
+                        }, 
+                        {
+                         "name":"label",
+                         "type":"string",
+                         "value":"\u0432\u0435\u0440\u0445\u043d\u0438\u0439 \u0441\u0432\u0435\u0442"
+                        }, 
+                        {
+                         "name":"latch",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"requires",
+                         "type":"string",
+                         "value":"any"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":82,
+                 "x":718,
+                 "y":398
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
         {
-          "height": 18,
-          "id": 50,
-          "name": "pink-plate",
-          "properties": [
-            { "name": "color", "type": "color", "value": "#ffd94f8a" },
-            { "name": "id", "type": "string", "value": "pink-plate" },
-            { "name": "latch", "type": "bool", "value": true },
-            { "name": "requires", "type": "string", "value": "pink" }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 72,
-          "x": 1184,
-          "y": 624
-        },
+         "draworder":"topdown",
+         "id":5,
+         "name":"Plates",
+         "objects":[
+                {
+                 "height":18,
+                 "id":50,
+                 "name":"pink-plate",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ffd94f8a"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"pink-plate"
+                        }, 
+                        {
+                         "name":"latch",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"requires",
+                         "type":"string",
+                         "value":"pink"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":72,
+                 "x":1152,
+                 "y":624
+                }, 
+                {
+                 "height":18,
+                 "id":51,
+                 "name":"blue-plate",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff5fa1c9"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"blue-plate"
+                        }, 
+                        {
+                         "name":"latch",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"requires",
+                         "type":"string",
+                         "value":"blue"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":72,
+                 "x":1376,
+                 "y":624
+                }, 
+                {
+                 "height":18,
+                 "id":52,
+                 "name":"green-plate",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff8fc68d"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"green-plate"
+                        }, 
+                        {
+                         "name":"latch",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"requires",
+                         "type":"string",
+                         "value":"green"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":72,
+                 "x":1280,
+                 "y":624
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
         {
-          "height": 18,
-          "id": 51,
-          "name": "blue-plate",
-          "properties": [
-            { "name": "color", "type": "color", "value": "#ff5fa1c9" },
-            { "name": "id", "type": "string", "value": "blue-plate" },
-            { "name": "latch", "type": "bool", "value": true },
-            { "name": "requires", "type": "string", "value": "blue" }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 72,
-          "x": 1278,
-          "y": 624
-        },
+         "draworder":"topdown",
+         "id":6,
+         "name":"Doors",
+         "objects":[
+                {
+                 "height":506,
+                 "id":60,
+                 "name":"tower-door",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff111111"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"tower-door"
+                        }, 
+                        {
+                         "name":"latch",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"opensWhen",
+                         "type":"string",
+                         "value":"tower"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":40,
+                 "x":900,
+                 "y":136
+                }, 
+                {
+                 "height":522,
+                 "id":61,
+                 "name":"final-door",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff111111"
+                        }, 
+                        {
+                         "name":"id",
+                         "type":"string",
+                         "value":"final-door"
+                        }, 
+                        {
+                         "name":"latch",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"opensWhen",
+                         "type":"string",
+                         "value":"pink-plate,blue-plate,green-plate"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":42,
+                 "x":1640,
+                 "y":120
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
         {
-          "height": 18,
-          "id": 52,
-          "name": "green-plate",
-          "properties": [
-            { "name": "color", "type": "color", "value": "#ff8fc68d" },
-            { "name": "id", "type": "string", "value": "green-plate" },
-            { "name": "latch", "type": "bool", "value": true },
-            { "name": "requires", "type": "string", "value": "green" }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 72,
-          "x": 1372,
-          "y": 624
-        }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 6,
-      "name": "Doors",
-      "objects": [
+         "draworder":"topdown",
+         "id":7,
+         "name":"Goals",
+         "objects":[
+                {
+                 "height":58,
+                 "id":70,
+                 "name":"pink",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":1710,
+                 "y":586
+                }, 
+                {
+                 "height":58,
+                 "id":71,
+                 "name":"blue",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":1770,
+                 "y":586
+                }, 
+                {
+                 "height":58,
+                 "id":72,
+                 "name":"green",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":1830,
+                 "y":586
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
         {
-          "height": 94,
-          "id": 60,
-          "name": "tower-door",
-          "properties": [
-            { "name": "color", "type": "color", "value": "#ff111111" },
-            { "name": "id", "type": "string", "value": "tower-door" },
-            { "name": "latch", "type": "bool", "value": true },
-            { "name": "opensWhen", "type": "string", "value": "tower" }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 40,
-          "x": 900,
-          "y": 548
-        },
+         "draworder":"topdown",
+         "id":8,
+         "name":"Notes",
+         "objects":[
+                {
+                 "height":32,
+                 "id":81,
+                 "name":"note-2",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"text",
+                         "type":"string",
+                         "value":"\u0411\u0430\u0448\u043d\u044f \u0438\u0437 \u0434\u0440\u0443\u0437\u0435\u0439 \u0434\u043e\u0441\u0442\u0430\u043d\u0435\u0442 \u0434\u043e \u0432\u0435\u0440\u0445\u043d\u0435\u0433\u043e \u0441\u0432\u0435\u0442\u0430"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":340,
+                 "x":546,
+                 "y":468
+                }, 
+                {
+                 "height":32,
+                 "id":83,
+                 "name":"note-4",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"text",
+                         "type":"string",
+                         "value":"\u0422\u0440\u0438 \u0446\u0432\u0435\u0442\u0430 \u0434\u0435\u0440\u0436\u0430\u0442 \u0444\u0438\u043d\u0430\u043b\u044c\u043d\u0443\u044e \u0434\u0432\u0435\u0440\u044c"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":320,
+                 "x":1208,
+                 "y":560
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":9,
+ "nextobjectid":84,
+ "orientation":"orthogonal",
+ "properties":[
         {
-          "height": 122,
-          "id": 61,
-          "name": "final-door",
-          "properties": [
-            { "name": "color", "type": "color", "value": "#ff111111" },
-            { "name": "id", "type": "string", "value": "final-door" },
-            { "name": "latch", "type": "bool", "value": true },
-            { "name": "opensWhen", "type": "string", "value": "pink-plate,blue-plate,green-plate" }
-          ],
-          "rotation": 0,
-          "type": "",
-          "visible": true,
-          "width": 42,
-          "x": 1640,
-          "y": 520
-        }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 7,
-      "name": "Goals",
-      "objects": [
-        { "height": 58, "id": 70, "name": "pink", "rotation": 0, "type": "", "visible": true, "width": 48, "x": 1710, "y": 586 },
-        { "height": 58, "id": 71, "name": "blue", "rotation": 0, "type": "", "visible": true, "width": 48, "x": 1770, "y": 586 },
-        { "height": 58, "id": 72, "name": "green", "rotation": 0, "type": "", "visible": true, "width": 48, "x": 1830, "y": 586 }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "draworder": "topdown",
-      "id": 8,
-      "name": "Notes",
-      "objects": [
-        { "height": 32, "id": 80, "name": "note-1", "properties": [{ "name": "text", "type": "string", "value": "Теперь звезды могут стоять друг на друге" }], "rotation": 0, "type": "", "visible": true, "width": 320, "x": 110, "y": 124 },
-        { "height": 32, "id": 81, "name": "note-2", "properties": [{ "name": "text", "type": "string", "value": "Башня из друзей достанет до верхнего света" }], "rotation": 0, "type": "", "visible": true, "width": 340, "x": 546, "y": 468 },
-        { "height": 32, "id": 82, "name": "note-3", "properties": [{ "name": "text", "type": "string", "value": "Синяя горка все еще скидывает чужих назад" }], "rotation": 0, "type": "", "visible": true, "width": 340, "x": 1018, "y": 582 },
-        { "height": 32, "id": 83, "name": "note-4", "properties": [{ "name": "text", "type": "string", "value": "Три цвета держат финальную дверь" }], "rotation": 0, "type": "", "visible": true, "width": 320, "x": 1264, "y": 606 }
-      ],
-      "opacity": 1,
-      "type": "objectgroup",
-      "visible": true,
-      "x": 0,
-      "y": 0
-    }
-  ],
-  "nextlayerid": 9,
-  "nextobjectid": 84,
-  "orientation": "orthogonal",
-  "properties": [
-    { "name": "alias", "type": "string", "value": "3" },
-    { "name": "background", "type": "string", "value": "assets/sprites/bg-1.png" },
-    { "name": "completeMessage", "type": "string", "value": "Уровень 3 пройден" },
-    { "name": "id", "type": "string", "value": "level-three" },
-    { "name": "nextLevel", "type": "string", "value": "level-four" },
-    { "name": "startMessage", "type": "string", "value": "Встаньте друг на друга, нажмите верхний свет и откройте ворота" },
-    { "name": "title", "type": "string", "value": "Уровень 3" },
-    { "name": "worldHeight", "type": "int", "value": 720 },
-    { "name": "worldWidth", "type": "int", "value": 1900 }
-  ],
-  "renderorder": "right-down",
-  "tiledversion": "1.11.2",
-  "tileheight": 32,
-  "tilesets": [],
-  "tilewidth": 32,
-  "type": "map",
-  "version": "1.10",
-  "width": 60
+         "name":"alias",
+         "type":"string",
+         "value":"3"
+        }, 
+        {
+         "name":"background",
+         "type":"string",
+         "value":"assets\/sprites\/bg-1.png"
+        }, 
+        {
+         "name":"completeMessage",
+         "type":"string",
+         "value":"\u0423\u0440\u043e\u0432\u0435\u043d\u044c 3 \u043f\u0440\u043e\u0439\u0434\u0435\u043d"
+        }, 
+        {
+         "name":"id",
+         "type":"string",
+         "value":"level-three"
+        }, 
+        {
+         "name":"nextLevel",
+         "type":"string",
+         "value":"4"
+        }, 
+        {
+         "name":"startMessage",
+         "type":"string",
+         "value":"\u0412\u0441\u0442\u0430\u043d\u044c\u0442\u0435 \u0434\u0440\u0443\u0433 \u043d\u0430 \u0434\u0440\u0443\u0433\u0430, \u043d\u0430\u0436\u043c\u0438\u0442\u0435 \u0432\u0435\u0440\u0445\u043d\u0438\u0439 \u0441\u0432\u0435\u0442 \u0438 \u043e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u0432\u043e\u0440\u043e\u0442\u0430"
+        }, 
+        {
+         "name":"title",
+         "type":"string",
+         "value":"\u0423\u0440\u043e\u0432\u0435\u043d\u044c 3"
+        }, 
+        {
+         "name":"worldHeight",
+         "type":"int",
+         "value":720
+        }, 
+        {
+         "name":"worldWidth",
+         "type":"int",
+         "value":1900
+        }],
+ "renderorder":"right-down",
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilesets":[],
+ "tilewidth":32,
+ "type":"map",
+ "version":"1.10",
+ "width":60
 }
