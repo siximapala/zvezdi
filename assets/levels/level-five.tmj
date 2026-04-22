@@ -387,6 +387,11 @@
          "value":"5"
         }, 
         {
+         "name":"background",
+         "type":"string",
+         "value":"assets\/sprites\/bgg-5.png"
+        }, 
+        {
          "name":"id",
          "type":"string",
          "value":"level-five"
