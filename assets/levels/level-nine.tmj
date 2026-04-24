@@ -568,7 +568,7 @@
         {
          "name":"nextLevel",
          "type":"string",
-         "value":"level-ten"
+         "value":"10"
         }, 
         {
          "name":"startMessage",

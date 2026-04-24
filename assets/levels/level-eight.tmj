@@ -498,7 +498,7 @@
         {
          "name":"nextLevel",
          "type":"string",
-         "value":"level-nine"
+         "value":"9"
         }, 
         {
          "name":"startMessage",

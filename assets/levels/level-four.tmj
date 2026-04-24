@@ -118,7 +118,7 @@
                  "y":1152
                 }, 
                 {
-                 "height":128,
+                 "height":136,
                  "id":86,
                  "name":"ramp-step-1",
                  "opacity":1,
@@ -154,7 +154,7 @@
                  "y":128
                 }, 
                 {
-                 "height":72,
+                 "height":32,
                  "id":91,
                  "name":"ramp-step-1",
                  "opacity":1,
@@ -163,7 +163,7 @@
                  "visible":true,
                  "width":224,
                  "x":2976,
-                 "y":888
+                 "y":896
                 }, 
                 {
                  "height":32,
