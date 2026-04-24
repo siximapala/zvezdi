@@ -106,6 +106,78 @@ body {
   display: none;
 }
 
+.lobby-code-overlay {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 30;
+  display: grid;
+  gap: 3px;
+  min-width: 210px;
+  padding: 12px 16px;
+  border: 3px solid #111111;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111111;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(17, 17, 17, 0.18);
+}
+
+.lobby-code-overlay span,
+.lobby-code-overlay small {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.lobby-code-overlay strong {
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.reaction-hint-overlay {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 25;
+  max-width: min(620px, calc(100vw - 32px));
+  padding: 10px 14px;
+  border: 2px solid #111111;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #111111;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  transform: translateX(-50%);
+  box-shadow: 0 8px 20px rgba(17, 17, 17, 0.14);
+  pointer-events: none;
+}
+
+.network-status-overlay {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 28;
+  padding: 7px 10px;
+  border: 2px solid #111111;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #111111;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(17, 17, 17, 0.14);
+  pointer-events: none;
+}
+
+.network-status-overlay--warn {
+  background: #fff2c4;
+}
+
 .dev-tuning {
   position: fixed;
   right: 18px;

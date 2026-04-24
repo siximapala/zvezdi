@@ -10,6 +10,7 @@ export function createControlSet(scene, controls) {
     left: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[controls.left]),
     right: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[controls.right]),
     jump: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[controls.jump]),
+    spaceJump: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
     down: controls.down ? scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[controls.down]) : null,
     ability: controls.ability ? scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes[controls.ability]) : null
   };
@@ -27,8 +28,8 @@ export function updatePlayerMovement(player, now, input = {}) {
   const preserveMomentum = now < player.slopeMomentumUntil;
   const blueFallJumpAvailable = character.id === 'blue' && !onGround && !player.blueFallJumpUsed;
   const canGroundJump = onGround && now - (player.lastJumpedAt ?? -1000) > 150;
-  const left = keys.left.isDown;
-  const right = keys.right.isDown;
+  const left = input.left ?? keys.left.isDown;
+  const right = input.right ?? keys.right.isDown;
   const inputAxis = (right ? 1 : 0) - (left ? 1 : 0);
   const jumpPressed = Boolean(input.jumpPressed);
   const maxRunSpeed = (character.speed / 58) * tuning.speedScale;

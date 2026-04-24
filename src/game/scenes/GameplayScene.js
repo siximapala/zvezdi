@@ -22,6 +22,7 @@ import {
 import { createControlSet, updatePlayerMovement } from '../systems/playerControls.js';
 import { levelEntryFor } from '../config/level-registry.js';
 import { resolveLevelConfig } from '../systems/tiledLevel.js';
+import { getNetworkSession } from '../systems/networkSession.js';
 
 const PhaserScene = window.Phaser?.Scene ?? class {};
 const CAMERA_VIEW = {
@@ -72,12 +73,81 @@ const BLUE_FALL_EFFECT = {
   burstMs: 420,
   pixelSize: 8
 };
+const REACTIONS = {
+  Digit4: 'Привет!',
+  Digit5: 'Сюда!',
+  Digit6: 'Готов!',
+  Numpad4: 'Привет!',
+  Numpad5: 'Сюда!',
+  Numpad6: 'Готов!'
+};
 
 const GROUND_CONTACT = {
   topGraceAbove: 30,
   topGraceBelow: 18,
   minHorizontalOverlap: 4
 };
+
+function emptySharedInput() {
+  return {
+    left: false,
+    right: false,
+    down: false,
+    jump: false,
+    ability: false,
+    jumpPressed: false,
+    abilityPressed: false
+  };
+}
+
+async function copyTextToClipboard(text) {
+  const value = String(text ?? '').trim();
+
+  if (!value) {
+    return false;
+  }
+
+  if (copyTextWithTextarea(value)) {
+    return true;
+  }
+
+  if (navigator.clipboard?.writeText && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(value);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  return false;
+}
+
+function copyTextWithTextarea(value) {
+  const textarea = document.createElement('textarea');
+  textarea.value = value;
+  textarea.setAttribute('readonly', 'readonly');
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  textarea.style.top = '0';
+  textarea.style.opacity = '0';
+  document.body.append(textarea);
+  textarea.focus();
+  textarea.select();
+  textarea.setSelectionRange(0, value.length);
+
+  try {
+    return document.execCommand('copy');
+  } catch {
+    return false;
+  } finally {
+    textarea.remove();
+  }
+}
+
+function promptCopyText(value) {
+  window.prompt('Скопируй код лобби:', value);
+}
 
 export class GameplayScene extends PhaserScene {
   constructor(sceneKey, level) {
@@ -118,7 +188,19 @@ export class GameplayScene extends PhaserScene {
     this.createMechanics();
     this.createGoals();
     this.createPlayers();
+    this.networkSession = getNetworkSession();
+    this.networkSession?.enterGameplay(this);
+    this.reactionTexts = new Map();
+    this.reactionHandler = (event) => this.showReaction(event.detail);
+    this.nextLevelRequestHandler = () => this.startNextLevel();
+    this.restartLevelRequestHandler = () => this.restartCurrentLevel();
+    this.networkSession?.addEventListener('reaction', this.reactionHandler);
+    this.networkSession?.addEventListener('nextLevelRequest', this.nextLevelRequestHandler);
+    this.networkSession?.addEventListener('restartLevelRequest', this.restartLevelRequestHandler);
+    this.input.keyboard.on('keydown', this.handleReactionKey, this);
     this.createUi();
+    this.createLobbyCodePanel();
+    this.createReactionHintOverlay();
     this.createDevUi();
 
     this.matter.world.on('collisionstart', this.handleMatterCollision, this);
@@ -131,11 +213,25 @@ export class GameplayScene extends PhaserScene {
     this.resetKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     this.menuKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.nextKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+    this.sharedKeys = this.input.keyboard.addKeys({
+      leftA: Phaser.Input.Keyboard.KeyCodes.A,
+      rightD: Phaser.Input.Keyboard.KeyCodes.D,
+      jumpSpace: Phaser.Input.Keyboard.KeyCodes.SPACE,
+      abilityE: Phaser.Input.Keyboard.KeyCodes.E
+    });
     const matterWorld = this.matter.world;
     this.events.once('shutdown', () => {
       matterWorld?.off?.('collisionstart', this.handleMatterCollision, this);
       matterWorld?.off?.('collisionactive', this.handleMatterCollision, this);
       matterEvents?.off?.(matterEngine, 'beforeSolve', this.beforeMatterSolve);
+      this.input.keyboard.off('keydown', this.handleReactionKey, this);
+      this.networkSession?.removeEventListener('reaction', this.reactionHandler);
+      this.networkSession?.removeEventListener('nextLevelRequest', this.nextLevelRequestHandler);
+      this.networkSession?.removeEventListener('restartLevelRequest', this.restartLevelRequestHandler);
+      this.networkSession?.leaveGameplay(this);
+      this.lobbyCodePanel?.destroy();
+      this.removeLobbyCodeOverlay();
+      this.removeReactionHintOverlay();
       removeDevTuningPanel();
       hideHud();
     });
@@ -143,9 +239,10 @@ export class GameplayScene extends PhaserScene {
 
   update(time) {
     const Phaser = window.Phaser;
+    this.frameSharedInput = this.readSharedInput();
 
     if (Phaser.Input.Keyboard.JustDown(this.resetKey)) {
-      this.scene.restart();
+      this.restartCurrentLevel();
       return;
     }
 
@@ -155,11 +252,19 @@ export class GameplayScene extends PhaserScene {
     }
 
     if (this.completed && Phaser.Input.Keyboard.JustDown(this.nextKey) && this.level.nextLevel) {
-      this.scene.start(levelEntryFor(this.level.nextLevel)?.sceneKey ?? this.level.nextLevel);
+      this.startNextLevel();
       return;
     }
 
+    this.syncSleepingPlayers(time);
+
     for (const player of this.players) {
+      if (player.sleeping) {
+        this.updateLight(player);
+        this.updateSleepingText(player, time);
+        continue;
+      }
+
       if (player.respawning) {
         this.updateLight(player);
         this.updateGrappleLeaves(player);
@@ -167,19 +272,24 @@ export class GameplayScene extends PhaserScene {
         continue;
       }
 
-      player.frameInput = {
-        jumpPressed: Phaser.Input.Keyboard.JustDown(player.keys.jump),
-        abilityPressed: player.keys.ability ? Phaser.Input.Keyboard.JustDown(player.keys.ability) : false
-      };
+      player.frameInput = this.inputForPlayer(player);
+
+      if (this.networkSession?.connected && !this.networkSession.isHost) {
+        this.updateLight(player);
+        this.updateGrappleLeaves(player);
+        this.updateBlueFallEffect(player, time);
+        continue;
+      }
 
       updatePlayerMovement(player, time, player.frameInput);
+      if (player.frameInput.jumpPressed && time - player.lastJumpedAt < 40) {
+        this.networkSession?.acknowledgeRemoteJump?.(player.character.id);
+      }
       this.updateLight(player);
       this.updateGrappleLeaves(player);
       this.updateBlueFallEffect(player, time);
 
-      const airborne = time - player.onGroundAt >= JUMP_ANIMATION_AIRBORNE_MS;
-      const animationState = airborne ? 'jump' : player.isMoving ? 'run' : 'idle';      this.updateBlueFallEffect(player, time);
-      playCharacterAnimation(player.sprite, player.character, animationState);
+      this.updatePlayerAnimation(player, time);
 
       if (player.sprite.y > this.level.world.height + 90) {
         this.respawnPlayer(player, 'Р С—Р В°Р Т‘Р ВµР Р…Р С‘Р Вµ');
@@ -188,8 +298,379 @@ export class GameplayScene extends PhaserScene {
 
     this.updateGrapples(time);
     this.updateMechanics();
+    this.networkSession?.updateInterpolation();
+    this.updateNetworkInterpolatedAnimations(time);
     this.updateCamera();
     this.updateGoals();
+    this.networkSession?.sendSnapshot(time);
+  }
+
+  inputForPlayer(player) {
+    const Phaser = window.Phaser;
+    const sharedInput = this.sharedInputFor(player);
+
+    if (this.networkSession?.connected) {
+      return this.networkSession.inputFor(player.character.id, {
+        characterId: player.character.id,
+        ...sharedInput
+      });
+    }
+
+    const useSpaceJump = this.shouldUseSpaceJump(player);
+    const localInput = {
+      characterId: player.character.id,
+      left: player.keys.left.isDown || sharedInput.left,
+      right: player.keys.right.isDown || sharedInput.right,
+      down: Boolean(player.keys.down?.isDown) || sharedInput.down,
+      jump: player.keys.jump.isDown || useSpaceJump || sharedInput.jump,
+      ability: Boolean(player.keys.ability?.isDown) || sharedInput.ability,
+      jumpPressed:
+        Phaser.Input.Keyboard.JustDown(player.keys.jump) ||
+        (useSpaceJump && Phaser.Input.Keyboard.JustDown(player.keys.spaceJump)) ||
+        sharedInput.jumpPressed,
+      abilityPressed:
+        (player.keys.ability ? Phaser.Input.Keyboard.JustDown(player.keys.ability) : false) || sharedInput.abilityPressed
+    };
+
+    return this.networkSession?.inputFor(player.character.id, localInput) ?? localInput;
+  }
+
+  sharedInputFor(player) {
+    if (this.networkSession?.connected && !this.networkSession.ownsCharacter(player.character.id)) {
+      return emptySharedInput();
+    }
+
+    return this.frameSharedInput ?? emptySharedInput();
+  }
+
+  readSharedInput() {
+    const Phaser = window.Phaser;
+    const keys = this.sharedKeys;
+
+    if (!keys) {
+      return emptySharedInput();
+    }
+
+    return {
+      left: keys.leftA.isDown,
+      right: keys.rightD.isDown,
+      down: false,
+      jump: keys.jumpSpace.isDown,
+      ability: keys.abilityE.isDown,
+      jumpPressed: Phaser.Input.Keyboard.JustDown(keys.jumpSpace),
+      abilityPressed: Phaser.Input.Keyboard.JustDown(keys.abilityE)
+    };
+  }
+
+  shouldUseSpaceJump(player) {
+    if (!player.keys.spaceJump?.isDown) {
+      return false;
+    }
+
+    if (!this.networkSession?.connected) {
+      return true;
+    }
+
+    return this.networkSession.ownsCharacter(player.character.id);
+  }
+
+  updatePlayerAnimation(player, time) {
+    const airborne = time - player.onGroundAt >= JUMP_ANIMATION_AIRBORNE_MS;
+    const movingByVelocity = Math.abs(player.sprite.body?.velocity?.x ?? 0) > 0.4;
+    const animationState = airborne ? 'jump' : player.isMoving || movingByVelocity ? 'run' : 'idle';
+    playCharacterAnimation(player.sprite, player.character, animationState);
+  }
+
+  updateNetworkInterpolatedAnimations(time) {
+    if (!this.networkSession?.connected || this.networkSession.isHost) {
+      return;
+    }
+
+    for (const player of this.players) {
+      if (player.sleeping) {
+        continue;
+      }
+
+      if (player.respawning) {
+        this.updateLight(player);
+        this.updateGrappleLeaves(player);
+        this.updateBlueFallEffect(player, time);
+        continue;
+      }
+
+      this.updateLight(player);
+      this.updateGrappleLeaves(player);
+      this.updateBlueFallEffect(player, time);
+      this.updatePlayerAnimation(player, time);
+    }
+  }
+
+  applyNetworkPlayerState(player, state, time) {
+    if (player.character.id === 'green') {
+      this.applyNetworkGrappleState(player, state.grapple, time);
+    }
+
+    if (player.character.id === 'blue') {
+      this.applyNetworkBlueFallState(player, state.blueFall, time);
+    }
+  }
+
+  applyNetworkGrappleState(player, grapple, time) {
+    if (!grapple?.anchorId) {
+      if (player.grapple) {
+        player.grapple = null;
+      }
+
+      this.clearGrappleLine(player);
+      return;
+    }
+
+    const anchor = this.level.grappleAnchors?.find((candidate) => candidate.id === grapple.anchorId);
+
+    if (!anchor) {
+      player.grapple = null;
+      this.clearGrappleLine(player);
+      return;
+    }
+
+    player.grapple = {
+      anchor,
+      length: grapple.length ?? Math.hypot(anchor.x - player.sprite.x, anchor.y - player.sprite.y),
+      attachedAt: player.grapple?.attachedAt ?? time
+    };
+    this.drawGrappleLine(player, anchor);
+  }
+
+  applyNetworkBlueFallState(player, blueFall, time) {
+    if (!blueFall) {
+      player.blueFallEnergy = 0;
+      player.blueFallJumpUsed = false;
+      player.blueFallJumpBurstAt = -1000;
+      player.blueFallJumpBurstEnergy = 0;
+      return;
+    }
+
+    player.blueFallEnergy = blueFall.energy ?? 0;
+    player.blueFallJumpUsed = Boolean(blueFall.jumpUsed);
+    player.blueFallJumpBurstEnergy = blueFall.burstEnergy ?? 0;
+    player.blueFallJumpBurstAt = blueFall.burstAge === null ? -1000 : time - blueFall.burstAge;
+  }
+
+  syncSleepingPlayers(time) {
+    for (const player of this.players) {
+      this.setPlayerSleeping(player, !this.isCharacterActive(player.character.id));
+
+      if (player.sleeping) {
+        this.updateSleepingText(player, time);
+      }
+    }
+  }
+
+  isCharacterActive(characterId) {
+    if (!this.networkSession?.connected) {
+      return true;
+    }
+
+    return (this.networkSession.lobby?.players ?? []).some((player) => player.characterId === characterId);
+  }
+
+  setPlayerSleeping(player, sleeping) {
+    if (player.sleeping === sleeping) {
+      return;
+    }
+
+    player.sleeping = sleeping;
+
+    if (sleeping) {
+      if (player.grapple) {
+        player.grapple = null;
+        this.clearGrappleLine(player);
+      }
+
+      player.sprite.setVelocity(0, 0);
+      player.sprite.setIgnoreGravity(true);
+      player.sprite.body.collisionFilter.mask = 0;
+      player.sprite.setAlpha(0.34);
+      player.aura.setAlpha(0.05);
+      player.sleepText = this.add
+        .text(player.sprite.x, player.sprite.y - 90, 'zZzZ', {
+          fontFamily: 'Arial, Helvetica, sans-serif',
+          fontSize: '22px',
+          fontStyle: '700',
+          color: '#111111',
+          backgroundColor: '#ffffff',
+          padding: { x: 8, y: 4 }
+        })
+        .setOrigin(0.5)
+        .setDepth(20)
+        .setResolution(2);
+      return;
+    }
+
+    player.sprite.setAlpha(1);
+    player.sprite.setIgnoreGravity(false);
+    player.sprite.body.collisionFilter.mask = player.collisionMask;
+    player.sleepText?.destroy();
+    player.sleepText = null;
+  }
+
+  updateSleepingText(player, time) {
+    if (!player.sleepText) {
+      return;
+    }
+
+    const dots = 2 + Math.floor(time / 350) % 4;
+    player.sleepText.setText(`zZ${'z'.repeat(dots)}`);
+    player.sleepText.setPosition(player.sprite.x, player.sprite.y - 90 + Math.sin(time / 260) * 6);
+  }
+
+  handleReactionKey(event) {
+    const label = REACTIONS[event.code];
+
+    if (!label) {
+      return;
+    }
+
+    if (this.networkSession?.connected) {
+      this.networkSession.sendReaction(label);
+      return;
+    }
+
+    this.showReaction({ characterId: this.players[0]?.character.id, label });
+  }
+
+  showReaction(detail) {
+    const player = this.players.find((candidate) => candidate.character.id === detail?.characterId) ?? this.players[0];
+
+    if (!player || !detail?.label) {
+      return;
+    }
+
+    const previous = this.reactionTexts.get(player.character.id);
+    previous?.destroy();
+
+    const text = this.add
+      .text(player.sprite.x, player.sprite.y - 96, detail.label, {
+        fontFamily: 'Arial, Helvetica, sans-serif',
+        fontSize: '24px',
+        fontStyle: '700',
+        color: '#111111',
+        backgroundColor: '#ffffff',
+        padding: { x: 10, y: 5 }
+      })
+      .setOrigin(0.5)
+      .setDepth(20)
+      .setResolution(2);
+
+    this.reactionTexts.set(player.character.id, text);
+    this.tweens.add({
+      targets: text,
+      y: text.y - 48,
+      alpha: 0,
+      duration: 1300,
+      ease: 'Cubic.easeOut',
+      onComplete: () => {
+        if (this.reactionTexts.get(player.character.id) === text) {
+          this.reactionTexts.delete(player.character.id);
+        }
+
+        text.destroy();
+      }
+    });
+  }
+
+  createLobbyCodePanel() {
+    const code = this.networkSession?.code;
+
+    if (!code) {
+      return;
+    }
+
+    this.createLobbyCodeOverlay(code);
+
+    this.lobbyCodePanel = this.add
+      .text(1032, 18, `КОД ЛОББИ: ${code}\nклик - копировать`, {
+        fontFamily: 'Arial, Helvetica, sans-serif',
+        fontSize: '18px',
+        fontStyle: '700',
+        color: '#111111',
+        align: 'center',
+        backgroundColor: '#ffffff',
+        padding: { x: 12, y: 8 }
+      })
+      .setScrollFactor(0)
+      .setDepth(100)
+      .setResolution(2)
+      .setInteractive({ useHandCursor: true });
+
+    this.lobbyCodePanel.on('pointerdown', async () => {
+      if (await copyTextToClipboard(code)) {
+        this.lobbyCodePanel.setText(`КОД ЛОББИ: ${code}\nскопировано`);
+      } else {
+        promptCopyText(code);
+        this.lobbyCodePanel.setText(`КОД ЛОББИ: ${code}\nвыдели код вручную`);
+      }
+
+      this.time.delayedCall(1200, () => {
+        this.lobbyCodePanel?.setText(`КОД ЛОББИ: ${code}\nклик - копировать`);
+      });
+    });
+  }
+
+  createLobbyCodeOverlay(code) {
+    this.removeLobbyCodeOverlay();
+
+    const overlay = document.createElement('button');
+    overlay.type = 'button';
+    overlay.className = 'lobby-code-overlay';
+    overlay.innerHTML = `<span>КОД ЛОББИ</span><strong>${code}</strong><small>клик - копировать</small>`;
+    overlay.addEventListener('click', async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (await copyTextToClipboard(code)) {
+        overlay.querySelector('small').textContent = 'скопировано';
+      } else {
+        promptCopyText(code);
+        overlay.querySelector('small').textContent = 'выдели код вручную';
+      }
+
+      window.setTimeout(() => {
+        if (overlay.isConnected) {
+          overlay.querySelector('small').textContent = 'клик - копировать';
+        }
+      }, 1200);
+    });
+
+    document.body.append(overlay);
+    this.lobbyCodeOverlay = overlay;
+  }
+
+  removeLobbyCodeOverlay() {
+    this.lobbyCodeOverlay?.remove();
+    this.lobbyCodeOverlay = null;
+  }
+
+  createReactionHintOverlay() {
+    const overlay = document.createElement('div');
+    overlay.className = 'reaction-hint-overlay';
+    overlay.textContent = 'Можно оставлять реакции: 4 - Привет!, 5 - Сюда!, 6 - Готов!';
+    document.body.append(overlay);
+    this.reactionHintOverlay = overlay;
+
+    this.reactionHintTimeout = window.setTimeout(() => {
+      this.removeReactionHintOverlay();
+    }, 10000);
+  }
+
+  removeReactionHintOverlay() {
+    if (this.reactionHintTimeout) {
+      window.clearTimeout(this.reactionHintTimeout);
+      this.reactionHintTimeout = null;
+    }
+
+    this.reactionHintOverlay?.remove();
+    this.reactionHintOverlay = null;
   }
 
   createLevelGeometry() {
@@ -278,6 +759,8 @@ export class GameplayScene extends PhaserScene {
         blueFallJumpBurstAt: -1000,
         blueFallJumpBurstEnergy: 0,
         slopeSlideDirection: -1,
+        sleeping: false,
+        sleepText: null,
         respawning: false
       };
 
@@ -517,8 +1000,8 @@ export class GameplayScene extends PhaserScene {
       const distance = Math.max(1, Math.hypot(dx, dy));
       const minLength = anchor.minLength ?? 74;
       const maxLength = anchor.maxLength ?? anchor.radius;
-      const lengthDelta = (green.keys.jump.isDown ? -4.6 : 0) + (green.keys.down?.isDown ? 4.6 : 0);
-      const inputAxis = (green.keys.right.isDown ? 1 : 0) - (green.keys.left.isDown ? 1 : 0);
+      const lengthDelta = (green.frameInput?.jump ? -4.6 : 0) + (green.frameInput?.down ? 4.6 : 0);
+      const inputAxis = (green.frameInput?.right ? 1 : 0) - (green.frameInput?.left ? 1 : 0);
 
       green.grapple.length = Phaser.Math.Clamp(green.grapple.length + lengthDelta, minLength, maxLength);
 
@@ -810,6 +1293,10 @@ export class GameplayScene extends PhaserScene {
     for (const activator of this.activators) {
       const { config, zone } = activator;
       const pressed = this.players.some((player) => {
+        if (player.sleeping) {
+          return false;
+        }
+
         const matchesCharacter = config.requires === 'any' || config.requires === player.character.id;
         return matchesCharacter && Phaser.Geom.Intersects.RectangleToRectangle(player.sprite.getBounds(), zone.getBounds());
       });
@@ -907,15 +1394,52 @@ export class GameplayScene extends PhaserScene {
   }
 
   updateInfoText() {
-    const ready = Object.values(this.goalState).filter(Boolean).length;
+    const activeGoalIds = this.activeGoalIds();
+    const ready = activeGoalIds.filter((id) => this.goalState[id]).length;
     updateHud({
       level: this.level.title,
       ready,
-      total: this.level.goals.length,
+      total: activeGoalIds.length,
       deaths: this.deaths,
       message: this.currentMessage,
       hasNext: Boolean(this.level.nextLevel)
     });
+  }
+
+  startNextLevel() {
+    if (!this.completed || !this.level.nextLevel) {
+      return;
+    }
+
+    const nextSceneKey = levelEntryFor(this.level.nextLevel)?.sceneKey ?? this.level.nextLevel;
+
+    if (this.networkSession?.connected) {
+      if (this.networkSession.isHost) {
+        this.networkSession.startLevel(nextSceneKey);
+      } else {
+        this.networkSession.requestNextLevel();
+        setHudMessage('Ждём переход от хоста...');
+      }
+      return;
+    }
+
+    this.scene.start(nextSceneKey);
+  }
+
+  restartCurrentLevel() {
+    const sceneKey = this.sys.settings.key;
+
+    if (this.networkSession?.connected) {
+      if (this.networkSession.isHost) {
+        this.networkSession.startLevel(sceneKey);
+      } else {
+        this.networkSession.requestRestartLevel();
+        setHudMessage('Ждём рестарт от хоста...');
+      }
+      return;
+    }
+
+    this.scene.restart();
   }
 
   updateGoals() {
@@ -923,19 +1447,44 @@ export class GameplayScene extends PhaserScene {
 
     for (const pad of this.goalZones) {
       const player = this.players.find((candidate) => candidate.character.id === pad.characterId);
+      const active = this.isCharacterActive(pad.characterId);
+
+      if (!active) {
+        this.goalState[pad.characterId] = true;
+        pad.setAlpha(0.24);
+        pad.setFillStyle(player.character.color, 0.08);
+        continue;
+      }
+
       const intersects = Phaser.Geom.Intersects.RectangleToRectangle(player.sprite.getBounds(), pad.getBounds());
       this.goalState[pad.characterId] = intersects;
+      pad.setAlpha(1);
       pad.setFillStyle(player.character.color, intersects ? 0.72 : 0.2);
     }
 
     this.updateInfoText();
 
     if (!this.completed && Object.values(this.goalState).every(Boolean)) {
-      this.completed = true;
-      this.currentMessage = this.level.completeMessage;
-      setHudMessage(this.currentMessage);
+      this.markLevelCompleted();
+    }
+  }
+
+  markLevelCompleted({ fromNetwork = false } = {}) {
+    if (this.completed) {
+      return;
+    }
+
+    this.completed = true;
+    this.currentMessage = this.level.completeMessage;
+    setHudMessage(this.currentMessage);
+
+    if (!fromNetwork) {
       this.cameras.main.flash(260, 255, 255, 255);
     }
+  }
+
+  activeGoalIds() {
+    return this.level.goals.map((goal) => goal.id).filter((id) => this.isCharacterActive(id));
   }
 
   respawnPlayer(player, reason) {
@@ -1089,4 +1638,3 @@ export class GameplayScene extends PhaserScene {
     graphics.strokePath();
   }
 }
-
