@@ -27,11 +27,9 @@ http://127.0.0.1:4173/?level=2
 http://127.0.0.1:4173/?level=3
 ```
 
-Level ids also work, for example `?level=level-two`. All playable levels come from `.tmj` files in `assets/levels`; if the map has `id = level-four` and `alias = 4`, both `?level=level-four` and `?level=4` work.
-
 После изменений в коде лучше обновлять вкладку через `Ctrl+F5`, чтобы браузер не держал старые JS-модули в кэше.
 
-## Dev tuning
+## Тюнинг для разрабов
 
 Для настройки ощущения управления открой уровень с параметром `dev=1`:
 
