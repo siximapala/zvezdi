@@ -159,7 +159,7 @@ Dev-сервер автоматически сканирует `assets/levels/*.
 docs/TILED_LEVELS.md
 ```
 
-Чеклист для нового уровня:
+Чеклист для нового уровня файл:
 
 ```text
 docs/NEW_LEVEL_TODO.md
