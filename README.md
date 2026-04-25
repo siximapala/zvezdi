@@ -112,9 +112,9 @@ npm run check
 
 Команда проверяет JavaScript-файлы на синтаксические ошибки.
 
-## Aseprite animations
+## Анимации Aseprite
 
-For this project, export character animation from Aseprite as:
+Для этого проекта экспортируйте анимации персонажей из Aseprite так:
 
 ```text
 Sprite sheet: Horizontal Strip
@@ -126,39 +126,40 @@ Border padding: 0
 Spacing: 0
 ```
 
-Save the PNG into `assets/sprites/`, for example:
+Сохраните PNG в `assets/sprites/`, например:
 
 ```text
 assets/sprites/blue-run.png
 ```
 
-Then wire them like this:
+Затем подключите его так:
 
-1. Keep all frames on the same canvas size, for example `32x32`.
-2. In `BootScene.preload`, load the PNG with `this.load.spritesheet(...)`.
-3. In `GameplayScene`, create the Matter sprite from that texture key directly.
-4. In `animations.js`, build the animation with `generateFrameNumbers(...)`.
+1. Все кадры должны быть на холсте одного размера, например `32x32`.
+2. В `BootScene.preload` загрузите PNG через `this.load.spritesheet(...)`.
+3. В `GameplayScene` создайте Matter-спрайт напрямую из этого texture key.
+4. В `animations.js` соберите анимацию через `generateFrameNumbers(...)`.
 
-Why: fixed-size strips are the simplest match for Phaser's spritesheet loader. Packed + trimmed atlas exports can shift frames and break rendering if the runtime expects a regular grid.
-## Tiled level editing
+Почему так: фиксированные strip-спрайты проще всего подходят для загрузчика `spritesheet` в Phaser. Экспорт через packed/trimmed atlas может сдвигать кадры и ломать отображение, если runtime ожидает обычную сетку.
 
-Levels are edited in Tiled through:
+## Редактирование уровней в Tiled
+
+Уровни редактируются в Tiled через файлы:
 
 ```text
 assets/levels/*.tmj
 ```
 
-Open a `.tmj` file in Tiled, edit object layers, save, then refresh the matching URL, for example `http://127.0.0.1:4173/?level=2`, with `Ctrl+F5`.
+Откройте `.tmj` файл в Tiled, измените object layers, сохраните файл, затем обновите нужный URL, например `http://127.0.0.1:4173/?level=2`, через `Ctrl+F5`.
 
-The dev server scans `assets/levels/*.tmj` and builds `assets/levels/manifest.json` automatically. The shared runtime is `src/game/scenes/GameplayScene.js`, so adding a Tiled level does not require creating a new scene class or JS level config.
+Dev-сервер автоматически сканирует `assets/levels/*.tmj` и собирает `assets/levels/manifest.json`. Общий runtime уровней находится в `src/game/scenes/GameplayScene.js`, поэтому для добавления Tiled-уровня не нужно создавать новую scene class или JS-конфиг уровня.
 
-Full layer/property guide:
+Полное руководство по слоям и свойствам:
 
 ```text
 docs/TILED_LEVELS.md
 ```
 
-New level checklist:
+Чеклист для нового уровня:
 
 ```text
 docs/NEW_LEVEL_TODO.md
